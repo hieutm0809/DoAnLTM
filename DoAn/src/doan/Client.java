@@ -1,114 +1,86 @@
+
 package doan;
 
-import java.awt.SecondaryLoop;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class Client {
-	private InetAddress host;
-	private int port;
-	
-	public Client(InetAddress host, int port) {
-		this.host = host;
-		this.port = port;
-	}
-	private void execute() throws IOException {
-		//Tạo Socket
-		DatagramSocket client = new DatagramSocket();
-		
-		//Phần bổ sung
-               
-		Scanner sc = new Scanner(System.in);
-		System.out.print("Nhập vào tên của bạn: ");
-		String name = sc.nextLine();
-		client.send(createPacket(name + " đã tham gia vào phòng chat!"));
-                System.out.println(name + " đã tham gia vào phòng chat");
-		
-		ReadClient read = new ReadClient(client);
-		read.start();
-		WriteClient write = new WriteClient(client, host, port, name);
-		write.start();	
-	}
-	
-	public static void main(String[] args) throws IOException {
-		Client client = new Client(InetAddress.getLocalHost(), 15797);
-		client.execute();
-	}
-	
-	private DatagramPacket createPacket(String value) {
-		byte[] arrData = value.getBytes();
-		return new DatagramPacket(arrData, arrData.length, host, port);
-	}
-}
 
-class ReadClient extends Thread{
-	private DatagramSocket client;
-
-	public ReadClient(DatagramSocket client) {
-		this.client = client;
+class SendMessage implements Runnable {
+	private BufferedWriter out;
+	private Socket socket;
+	public SendMessage(Socket s, BufferedWriter o) {
+		this.socket = s;
+		this.out = o;
 	}
-	
-	@Override
 	public void run() {
 		try {
 			while(true) {
-				String sms = recieveData(client);
-				System.out.println(sms);
+				BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+				String data = stdIn.readLine();
+				out.write(data+'\n');
+				out.flush();
+				if(data.equals("bye"))
+					break;
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-	}
-	
-	private String recieveData(DatagramSocket client) throws IOException {
-		byte[] temp = new byte[1024];
-		DatagramPacket recieve_Packet = new DatagramPacket(temp, temp.length);
-		client.receive(recieve_Packet);
-		return new String(recieve_Packet.getData()).trim();
+			System.out.println("CLIENT " + Client.myName + " closed connection");
+			out.close();
+			socket.close();
+			Client.executor.shutdownNow();
+		} catch (IOException e) {}
 	}
 }
 
-class WriteClient extends Thread{
-	private DatagramSocket client;
-	private InetAddress host;
-	private int port;
-	private String name;
-	
-	public WriteClient(DatagramSocket client, InetAddress host, int port, String name) {
-		this.client = client;
-		this.host = host;
-		this.port = port;
-		this.name = name;
+class ReceiveMessage implements Runnable {
+	private BufferedReader in;
+	private Socket socket;
+	public ReceiveMessage(Socket s, BufferedReader i) {
+		this.socket = s;
+		this.in = i;
 	}
-	
-	@Override
 	public void run() {
-		Scanner sc = new Scanner(System.in);
-		while(true) {
-			try {   
-				String sms = sc.nextLine();
-				DatagramPacket DP = createPacket(name + ": " + sms);	//Đóng gói chuẩn bị gửi đi
-				client.send(DP);
-                                
-                                if(sms.equals("bye")){
-                                    DP = createPacket(name + " thoát khỏi phòng chat");
-                                    client.send(DP);
-                                    System.out.println(name +" thoát khỏi phòng chat");
-                                    client.close();
+		try {
+			while(true) {
+				String data = in.readLine();
+				if(data.startsWith("NAME#")) {
+					Client.myName = data.split("#")[1];
+					System.out.println("CLIENT " +Client.myName + " connected");
+					continue;
+				}
+				if(data.equals("bye")) 
                                     break;
-                                }
-			} catch (Exception e) {
-				// TODO: handle exception
+				System.out.println("CLIENT " + Client.myName + " received: " + data);
 			}
-		}
+			socket.close();
+		} catch (IOException e) {}
 	}
-	
-	private DatagramPacket createPacket(String value) {
-		byte[] arrData = value.getBytes();
-		return new DatagramPacket(arrData, arrData.length, host, port);
-	}       
+}
+
+public class Client {
+    public static ExecutorService executor;
+	private static String host = "localhost";
+	private static int port = 1234;
+	private static Socket socket;
+	public static String myName = "";
+
+	private static BufferedWriter out;
+	private static BufferedReader in;
+
+	public static void main(String[] args) throws IOException, InterruptedException {
+		socket = new Socket(host, port);
+		out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		executor = Executors.newFixedThreadPool(2);
+                
+		SendMessage send = new SendMessage(socket, out);
+		ReceiveMessage recv = new ReceiveMessage(socket, in);
+		executor.execute(send);
+		executor.execute(recv);
+	}
 }
