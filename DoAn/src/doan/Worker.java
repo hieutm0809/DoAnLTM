@@ -32,9 +32,9 @@ public class Worker implements Runnable {
             String input = "";
             while (true) {
                 input = in.readLine();
-                System.out.println(" # Client " + myName +" : " + input);
+                System.out.println(" # Client " + myName + " : " + input);
                 if (input.equals("bye")) {
-                    System.out.println(" # Client " + myName + " is offline"); 
+                    System.out.println(" # Client " + myName + " is offline");
                     break;
                 }
                 if (sendBroadcast(input) != 0) {
