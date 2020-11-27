@@ -3,6 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/Users/Maa/Documents/GitHub/DoAnLTM/DoAn/src/doan/UserDAO.java</file>
             <file>file:/C:/Users/Maa/Documents/GitHub/DoAnLTM/DoAn/src/doan/UserDTO.java</file>
             <file>file:/C:/Users/Maa/Documents/GitHub/DoAnLTM/DoAn/src/doan/UserBUS.java</file>
@@ -12,6 +13,9 @@
             <file>file:/C:/Users/Maa/Documents/GitHub/DoAnLTM/DoAn/src/doan/Connection/KhachHangDAO.java</file>
             <file>file:/C:/Users/Maa/Documents/GitHub/DoAnLTM/DoAn/src/doan/Connection/MySQLConnect.java</file>
             <file>file:/C:/Users/Maa/Documents/GitHub/DoAnLTM/DoAn/src/doan/Connection/KhachHangBUS.java</file>
+=======
+            <file>file:/C:/Users/vinni/Desktop/DoAnLTM/DoAn/src/doan/testGUI.java</file>
+>>>>>>> c360b7fd37ded58f3e7ea38f8a710d24e968abed
         </group>
     </open-files>
 </project-private>
