@@ -2,17 +2,20 @@ package GUI;
 
 import doan.Connection.UserBUS;
 import doan.Connection.UserDTO;
+import doan.Client;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+
+
 public class LoginView extends JFrame {
 
-    JPanel panel;
-    JLabel userLabel, passwordLabel;
-    JTextField userText;
-    JPasswordField passwordText;
-    JButton loginButton, registerButton;
+    public static JPanel panel;
+    public static JLabel userLabel, passwordLabel;
+    public static JTextField userText;
+    public static JPasswordField passwordText;
+    public static JButton loginButton, registerButton;
     Font font = new Font("Open Sans", Font.BOLD, 12);
 
     public LoginView() {
@@ -56,23 +59,26 @@ public class LoginView extends JFrame {
         loginButton.setFont(font);
         loginButton.addActionListener((ActionEvent e) -> {
             String passtext = new String(passwordText.getPassword());
-            if (userText.getText().equals("") && passtext.equals("")) {
+            if (userText.getText().equals("") || passtext.equals("")) {
                 JOptionPane.showMessageDialog(null, "Không được để trống thông tin đăng nhập");
             } else {
-                UserBUS bususer = new UserBUS();
-                bususer.docDSuser();
-                UserDTO user = new UserDTO();
-                user = bususer.Tim(userText.getText());
-                if (user == null) {
-                    JOptionPane.showMessageDialog(null, "Tên tài khoản không tồn tại");
-                } else if (userText.getText().equals(user.getId()) && passtext.equals(user.getPass())) {
-                    GUI gui = new GUI();
-                    gui.displayGUI();
-                    gui.setVisible(true);
-                    setVisible(false);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Mật khẩu không chính xác");
-                }
+                Client.executeSendMessage();
+                
+                
+//                UserBUS bususer = new UserBUS();
+//                bususer.docDSuser();
+//                UserDTO user = new UserDTO();
+//                user = bususer.Tim(userText.getText());
+//                if (user == null) {
+//                    JOptionPane.showMessageDialog(null, "Tên tài khoản không tồn tại");
+//                } else if (userText.getText().equals(user.getId()) && passtext.equals(user.getPass())) {
+//                    GUI gui = new GUI();
+//                    gui.displayGUI();
+//                    gui.setVisible(true);
+//                    setVisible(false);
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "Mật khẩu không chính xác");
+//                }
             }
 
         });
@@ -94,10 +100,7 @@ public class LoginView extends JFrame {
         this.add(panel);
     }
 
-    public static void main(String[] args) {
-        LoginView lg = new LoginView();
-        lg.displayGUI();
-        lg.setLocationRelativeTo(null);
-        lg.setVisible(true);
+    public static void alert(String string) {
+        JOptionPane.showMessageDialog(null, string);
     }
 }

@@ -1,4 +1,4 @@
-package LTM_Tuan10;
+package Dang.LTM_Tuan10;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import LTM_Tuan10.testGUI;
+import Dang.LTM_Tuan10.testGUI;
 
 class SendMessage implements Runnable {
 

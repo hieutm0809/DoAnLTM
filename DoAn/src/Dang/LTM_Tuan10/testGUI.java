@@ -1,4 +1,4 @@
-package LTM_Tuan10;
+package Dang.LTM_Tuan10;
 import javax.swing.*;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import LTM_Tuan10.Client;
+import Dang.LTM_Tuan10.Client;
 
 
 public class testGUI extends JFrame {

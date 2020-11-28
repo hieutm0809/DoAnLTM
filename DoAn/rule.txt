@@ -1,0 +1,23 @@
+nguoinhan(nhomnhan)#noidungtinnhan
+nguoinhan(nhomnhan)#filetenfile
+nguoinhan(nhomnhan)#sticker
+login#id#matkhau
+register#id#fda#dsaf#fda#fda#fdas#dfsa#fdas
+block#user
+unblock#user
+addfriend#user
+removefriend#user
+addgroup#group#user
+removegroup#group
+removefromgroup#user
+
+người gửi thao tác GUI send file
+
+code hide:
+	người gửi:
+		user2#filetenfile
+		thao tác tạo chuỗi: nguoinhan#filetenfile rồi send cho server
+	server:
+		nhận nguoinhan#filetenfile rồi xử lý thao tác rồi send lại cho người nhận
+	người nhận:
+		thao tác nguoinhan#filetenfile sinh GUI trên khung chat và gán event sẽ download khi được click

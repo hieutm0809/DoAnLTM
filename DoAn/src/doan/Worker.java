@@ -1,13 +1,15 @@
 package doan;
 
+
+import doan.Connection.UserBUS;
+import doan.Connection.UserDTO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class Worker implements Runnable {
 
@@ -22,88 +24,109 @@ public class Worker implements Runnable {
         this.in = new BufferedReader(new InputStreamReader(s.getInputStream()));
         this.out = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
     }
-
+    
+    public void sendToOne(String id, String mess ) throws IOException {
+        boolean found = false;
+        for(Worker worker: Server.workers) {
+            if(worker.myName.equals(id)) {
+                worker.out.write(this.myName+ "#"+mess + '\n');
+                worker.out.flush();
+                System.out.println("Server write: " + mess + " to " + worker.myName);
+                //save message to DB
+                found = true;
+                break;
+            }
+        }
+        if(!found){
+            this.out.write("id is not found!" + '\n');
+            this.out.flush();
+            System.out.println("Server write: id is not found! to " + this.myName);
+        }
+    }
+    
+    public void sendToAll(String mess) throws IOException {
+        for(Worker worker: Server.workers) {
+            if (!this.myName.equals(worker.myName)) {
+                worker.out.write(this.myName+ " to all: "+mess + '\n');
+                worker.out.flush();
+                System.out.println("Server write: " + mess + " to " + worker.myName);
+            }
+        }
+    }
+    
+    public void systemCommand(String mess) throws IOException {
+        this.out.write("system#"+ mess + "\n");
+        this.out.flush();
+        System.out.println("Send: system#" + mess + " to " + this.myName);
+    }
+    
+//    public void setName(String name) throws IOException{    
+//        this.myName = name;
+//        //systemCommand("showGUI,"+this.myName);
+//    }
+    
+    public void login(String ID, String password) throws IOException{
+        UserBUS bususer = new UserBUS();
+        bususer.docDSuser();
+        UserDTO user = new UserDTO();
+        user = bususer.Tim(ID);
+        if (user == null) {
+            systemCommand("login#Tài khoản không tồn tại");
+        } else if (ID.equals(user.getId()) && password.equals(user.getPass())) {
+            systemCommand("login#success");
+            this.myName = ID;
+        } else {
+            systemCommand("login#Mật khẩu không đúng");
+        }
+    
+    }
+    
+    public void Process(String line) throws IOException {
+        if(!line.contains("#")){
+            this.out.write("Syntax error" + '\n');
+            this.out.flush();
+            System.out.println("Server write: id is not found! to " + this.myName);
+        } else {
+            String[] parts = line.split("#");
+            switch(parts[0]){
+                case "all":{
+                    sendToAll(parts[1]);
+                } break;
+                case "login":{
+                    login(parts[1],parts[2]);
+                } break;
+                //useradfabfasdfdas#hello cau
+                default: {
+                    sendToOne(parts[0],parts[1]);
+                }
+            }
+        }
+    }
+    
+    
+    
     public void run() {
-        System.out.println("Client " + socket.toString() + " is accepted");
+        System.out.println("Client " + socket.toString() + " accepted");
         try {
-            setName();
-            sendBroadcast(myName + " is online");
-            System.out.println(myName + " is online");
             String input = "";
+            //setName();
+            sendToAll("user "+ this.myName +" log in to server");
             while (true) {
                 input = in.readLine();
-                System.out.println(" # Client " + myName + " : " + input);
+                System.out.println("Server received: " + input + " from " + socket.toString() + " # Client " + myName);
                 if (input.equals("bye")) {
-                    System.out.println(" # Client " + myName + " is offline");
                     break;
                 }
-                if (sendBroadcast(input) != 0) {
-                    out.write("");
-                } else {
-                    out.write("");
-                }
-                out.flush();
+                Process(input);
             }
-            sendBroadcast(myName + " is offline");
+            System.out.println("Closed socket for client " + myName + " " + socket.toString());
+            sendToAll("user " + this.myName + " log out from server");
             in.close();
             out.close();
             socket.close();
-            removeWorker(myName);
+            Server.workers.remove(this);
         } catch (IOException e) {
             System.out.println(e);
         }
-    }
-
-    private int sendBroadcast(String msg) {
-        try {
-            for (Worker worker : Server.workers) {
-                if (!myName.equals(worker.myName)) {
-                    worker.out.write(msg + '\n');
-                    worker.out.flush();
-                }
-            }
-        } catch (Exception e) {
-            return 1;
-        }
-        return 0;
-    }
-
-    private int sendUnicast(String name, String msg) throws IOException {
-        try {
-            for (Worker worker : Server.workers) {
-                if (name.equals(worker.myName)) {
-                    worker.out.write(msg + '\n');
-                    worker.out.flush();
-                    return 0;	// success
-                }
-            }
-        } catch (Exception e) {
-            return 2;
-        } // exception
-        return 1; // client not found
-    }
-
-    private void setName() throws IOException {
-        this.out.write("Input name: " + '\n');
-        this.out.flush();
-        String name;
-        name = in.readLine();
-        this.myName = name;
-        this.out.write("user name is set: " + myName + '\n');
-        this.out.flush();
-    }
-
-    private boolean removeWorker(String name) {
-        try {
-            for (Worker worker : Server.workers) {
-                if (name.equals(worker.myName)) {
-                    Server.workers.remove(worker);
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
     }
 }

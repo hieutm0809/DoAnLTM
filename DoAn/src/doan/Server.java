@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 public class Server {
 
     public static int port = 1234;
-    public static int numThread = 10;
+    public static int numThread = 3;
     private static ServerSocket server = null;
     public static Vector<Worker> workers = new Vector<>();
 
@@ -19,7 +19,7 @@ public class Server {
         try {
             server = new ServerSocket(port);
             System.out.println("Server binding at port " + port);
-            System.out.println("Waiting for clients...");
+            System.out.println("Waiting for client...");
             while (true) {
                 Socket socket = server.accept();
                 Worker client = new Worker(socket);

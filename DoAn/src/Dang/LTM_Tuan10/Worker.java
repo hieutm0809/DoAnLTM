@@ -73,18 +73,16 @@ public class Worker implements Runnable {
         }
     }
     
-    public void setName() throws IOException{
-        boolean duplicate;
-        String name = in.readLine();    
+    public void setName(String name) throws IOException{    
         this.myName = name;
-        systemCommand("showGUI,"+this.myName);
+        //systemCommand("showGUI,"+this.myName);
     }
     
     public void run() {
         System.out.println("Client " + socket.toString() + " accepted");
         try {
             String input = "";
-            setName();
+            //setName();
             sendToAll("user "+ this.myName +" log in to server");
             while (true) {
                 input = in.readLine();
