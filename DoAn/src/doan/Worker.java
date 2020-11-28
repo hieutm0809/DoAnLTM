@@ -16,9 +16,9 @@ public class Worker implements Runnable {
     BufferedReader in;
     BufferedWriter out;
 
-    public Worker(Socket s, String name) throws IOException {
+    public Worker(Socket s) throws IOException {
         this.socket = s;
-        this.myName = name;
+        this.myName = "";
         this.in = new BufferedReader(new InputStreamReader(s.getInputStream()));
         this.out = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
     }
@@ -26,9 +26,9 @@ public class Worker implements Runnable {
     public void run() {
         System.out.println("Client " + socket.toString() + " is accepted");
         try {
-            myName = in.readLine();
-            sendUnicast(myName, "NAME#" + myName);
+            setName();
             sendBroadcast(myName + " is online");
+            System.out.println(myName + " is online");
             String input = "";
             while (true) {
                 input = in.readLine();
@@ -44,7 +44,6 @@ public class Worker implements Runnable {
                 }
                 out.flush();
             }
-            //System.out.println("Closed socket for client " + name + " " + socket.toString());
             sendBroadcast(myName + " is offline");
             in.close();
             out.close();
@@ -82,6 +81,16 @@ public class Worker implements Runnable {
             return 2;
         } // exception
         return 1; // client not found
+    }
+
+    private void setName() throws IOException {
+        this.out.write("Input name: " + '\n');
+        this.out.flush();
+        String name;
+        name = in.readLine();
+        this.myName = name;
+        this.out.write("user name is set: " + myName + '\n');
+        this.out.flush();
     }
 
     private boolean removeWorker(String name) {
