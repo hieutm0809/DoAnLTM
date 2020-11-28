@@ -1,6 +1,5 @@
 package doan;
 
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,16 +15,14 @@ public class Server {
     public static Vector<Worker> workers = new Vector<>();
 
     public static void main(String[] args) throws IOException {
-        int i = 0;
         ExecutorService executor = Executors.newFixedThreadPool(numThread);
         try {
             server = new ServerSocket(port);
             System.out.println("Server binding at port " + port);
             System.out.println("Waiting for clients...");
             while (true) {
-                i++;
                 Socket socket = server.accept();
-                Worker client = new Worker(socket, Integer.toString(i));
+                Worker client = new Worker(socket);
                 workers.add(client);
                 executor.execute(client);
             }
