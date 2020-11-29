@@ -1,14 +1,15 @@
 package GUI;
 
+import doan.Connection.UserDTO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.border.Border;
-/**
- *
- * @author Maa
- */
+
 public class GUI extends JFrame {
 
+    private JList<UserDTO> listUserDTO;
     JPanel pn_left, pn_right, pn_center, pn_top;
     JButton c_btn_send, c_btn_file, c_btn_sticker;
     JTextArea c_input, c_display;
@@ -31,12 +32,10 @@ public class GUI extends JFrame {
         this.setSize(1000, 650);
         this.centreWindow(this);
         this.setLayout(null);
+
     }
 
     public void displayGUI() {
-        
-    
-        
 
         // Các thông tin về GUI này
         // Kích thước là 1000,650
@@ -44,19 +43,12 @@ public class GUI extends JFrame {
         //******
         //***
         //Panel phía bên tay trái để hiện thị danh sách bạn bè 
+//        pn_left = new JPanel();
+//        pn_left.setLayout(null);
         pn_left = new JPanel();
-        pn_left.setLayout(null);
+        pn_left.add(listUserDTO = createListUserDTOs());
         pn_left.setBackground(outcolor);
         pn_left.setBounds(0, 100, 250, 620);
-
-        user1 = new JLabel();
-        user1.setBounds(15, 15, 300, 40);
-        user1.setText("USER 1");
-        user2 = new JLabel();
-        user2.setBounds(15, 55, 300, 40);
-        user2.setText("USER 2");
-        pn_left.add(user1);
-        pn_left.add(user2);
 
         // Panel trung tâm để hiện thị khung chat, nhập liệu và nút gửi tin nhắn.
         pn_center = new JPanel();
@@ -64,7 +56,6 @@ public class GUI extends JFrame {
         pn_center.setBounds(250, 100, 500, 620);
 
         c_label = new JLabel();
-        c_label.setText(user2.getText());
         c_label.setHorizontalAlignment(JLabel.CENTER);
         c_label.setFont(new Font("Open Sans", Font.BOLD, 16));
         c_label.setBounds(0, 0, 500, 35);
@@ -89,7 +80,7 @@ public class GUI extends JFrame {
         c_btn_send.setBackground(outcolor);
         c_btn_send.setBorder(topBorder);
         c_btn_send.setFocusPainted(false);
-
+        
         c_btn_file = new JButton();
         c_btn_file.setIcon(new ImageIcon(getClass().getResource("/Image/file.png")));
         c_btn_file.setBounds(402, 475, 49, 40);
@@ -120,7 +111,6 @@ public class GUI extends JFrame {
 
         r_name = new JLabel();
         r_name.setFont(new Font("Open Sans", Font.BOLD, 20));
-        r_name.setText(user2.getText());
         r_name.setBounds(80, 20, 100, 70);
 
         pn_right.add(r_name);
@@ -159,6 +149,23 @@ public class GUI extends JFrame {
         int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
         int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
         frame.setLocation(x, y);
+    }
+
+    private JList<UserDTO> createListUserDTOs() {
+        // create List model
+        DefaultListModel<UserDTO> model = new DefaultListModel<>();
+        // add item to model
+        model.addElement(new UserDTO("TheKhanh", "123"));
+        model.addElement(new UserDTO("TheKhanh1", "123"));
+        model.addElement(new UserDTO("TheKhanh2", "123"));
+        model.addElement(new UserDTO("TheKhanh3", "123"));
+        model.addElement(new UserDTO("TheKhanh4", "123"));
+
+        // create JList with model
+        JList<UserDTO> list = new JList<UserDTO>(model);
+        // set cell renderer 
+        list.setCellRenderer(new UserDTORenderer());
+        return list;
     }
 
 //    public static void main(String[] args) {
