@@ -35,7 +35,7 @@ public class UserDTORenderer extends JPanel implements ListCellRenderer<UserDTO>
     @Override
     public Component getListCellRendererComponent(JList<? extends UserDTO> list,
             UserDTO user, int index, boolean isSelected, boolean cellHasFocus) {
-        lbId.setText(user.getId());
+        lbId.setText(user.getFullname());
         lbId.setOpaque(true);
         lbId.setFont(new Font("Open Sans", Font.PLAIN, 15));
         lbId.setPreferredSize(new Dimension(250, 50));

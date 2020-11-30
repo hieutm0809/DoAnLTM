@@ -19,9 +19,9 @@ public class UserBUS {
         dsuser = data.docDSSP();
     }
 
-    public UserDTO Tim(String id) {
+    public UserDTO Tim(String userName) {
         for (UserDTO user : dsuser) {
-            if (user.getId().equals(id)) {
+            if (user.getUsername().equals(userName) ) {
                 return user;
             }
         }

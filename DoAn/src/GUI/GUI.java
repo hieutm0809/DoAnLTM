@@ -155,11 +155,12 @@ public class GUI extends JFrame {
         // create List model
         DefaultListModel<UserDTO> model = new DefaultListModel<>();
         // add item to model
-        model.addElement(new UserDTO("TheKhanh", "123"));
-        model.addElement(new UserDTO("TheKhanh1", "123"));
-        model.addElement(new UserDTO("TheKhanh2", "123"));
-        model.addElement(new UserDTO("TheKhanh3", "123"));
-        model.addElement(new UserDTO("TheKhanh4", "123"));
+        model.addElement(new UserDTO(0,"TheKhanh", "123","","",""));
+        model.addElement(new UserDTO(0,"TheKhanh1", "123","","",""));
+        model.addElement(new UserDTO(0,"TheKhanh2", "123","","",""));
+        model.addElement(new UserDTO(0,"TheKhanh3", "123","","",""));
+        model.addElement(new UserDTO(0,"TheKhanh4", "123","","",""));
+        model.addElement(new UserDTO(0,"TheKhanh5", "123","","",""));
 
         // create JList with model
         JList<UserDTO> list = new JList<UserDTO>(model);

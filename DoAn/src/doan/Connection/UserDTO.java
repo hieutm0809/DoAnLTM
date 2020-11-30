@@ -5,31 +5,72 @@
  */
 package doan.Connection;
 
+import java.time.LocalDate;
+
 
 public class UserDTO {
 
-    private String id, pass;
+    private String username, password, fullname, sex, birthday;
+    private int id;
 
-    public UserDTO(String id, String pass) {
+    public UserDTO(int id, String username, String password, String fullname, String sex, String birthday) {
         this.id = id;
-        this.pass = pass;
+        this.username = username;
+        this.password = password;
+        this.fullname = fullname;
+        this.sex = sex;
+        this.birthday = birthday;
     }
 
-    public String getId() {
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getPass() {
-        return pass;
-    }
-
-    public void setPass(String pass) {
-        this.pass = pass;
-    }
+    
 
     public UserDTO() {
     }

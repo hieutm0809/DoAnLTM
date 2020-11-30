@@ -17,22 +17,21 @@ import java.util.logging.Logger;
 
 public class Worker implements Runnable {
 
-    private String myName;
+    private int myName;
     private Socket socket;
     BufferedReader in;
     BufferedWriter out;
 
     public Worker(Socket s) throws IOException {
         this.socket = s;
-        this.myName = "";
         this.in = new BufferedReader(new InputStreamReader(s.getInputStream()));
         this.out = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
     }
     
-    public void sendToOne(String id, String mess ) throws IOException {
+    public void sendToOne(int id, String mess ) throws IOException {
         boolean found = false;
         for(Worker worker: Server.workers) {
-            if(worker.myName.equals(id)) {
+            if(worker.myName == id) {
                 worker.out.write(this.myName+ "#"+mess + '\n');
                 worker.out.flush();
                 System.out.println("Server write: " + mess + " to " + worker.myName);
@@ -50,7 +49,7 @@ public class Worker implements Runnable {
     
     public void sendToAll(String mess) throws IOException {
         for(Worker worker: Server.workers) {
-            if (!this.myName.equals(worker.myName)) {
+            if (!(this.myName == worker.myName)) {
                 worker.out.write(this.myName+ " to all: "+mess + '\n');
                 worker.out.flush();
                 System.out.println("Server write: " + mess + " to " + worker.myName);
@@ -69,16 +68,16 @@ public class Worker implements Runnable {
 //        //systemCommand("showGUI,"+this.myName);
 //    }
     
-    public void login(String ID, String password) throws IOException{
+    public void login(String userName, String password) throws IOException{
         UserBUS bususer = new UserBUS();
         bususer.docDSuser();
         UserDTO user = new UserDTO();
-        user = bususer.Tim(ID);
+        user = bususer.Tim(userName);
         if (user == null) {
             systemCommand("login#Tài khoản không tồn tại");
-        } else if (ID.equals(user.getId()) && password.equals(user.getPass())) {
+        } else if (userName.equals(user.getUsername()) && password.equals(user.getPassword())) {
             systemCommand("login#success");
-            this.myName = ID;
+            this.myName = user.getId();
         } else {
             systemCommand("login#Mật khẩu không đúng");
         }
@@ -106,7 +105,7 @@ public class Worker implements Runnable {
                 } break;
                 //useradfabfasdfdas#hello cau
                 default: {
-                    sendToOne(parts[0],parts[1]);
+                    sendToOne(Integer.parseInt(parts[0]),parts[1]);
                 }
             }
         }

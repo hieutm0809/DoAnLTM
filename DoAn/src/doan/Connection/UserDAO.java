@@ -23,8 +23,12 @@ public class UserDAO {
             ConnectData.rs = ConnectData.st.executeQuery(qry);
             while(ConnectData.rs.next()){
                 UserDTO user = new UserDTO();
-                user.setId(ConnectData.rs.getString(1));
-                user.setPass(ConnectData.rs.getString(2));
+                user.setId(ConnectData.rs.getInt(1));
+                user.setUsername(ConnectData.rs.getString(2));
+                user.setPassword(ConnectData.rs.getString(3));
+                user.setFullname(ConnectData.rs.getString(4));
+                user.setSex(ConnectData.rs.getString(5));
+                user.setBirthday(ConnectData.rs.getString(6));
                 dsuser.add(user);
             }
         }
