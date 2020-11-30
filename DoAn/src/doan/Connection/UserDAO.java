@@ -34,4 +34,16 @@ public class UserDAO {
         ConnectData.MySQLDisconnect();
         return dsuser;
     }
+    public void friendList() throws SQLException{
+        MySQLConnect ConnectData = new MySQLConnect();
+        //ArrayList dsfriendlist = new ArrayList<FriendListDTO>();
+        String sql = "select * from friendlist";
+        ConnectData.st = ConnectData.conn.createStatement();
+        ConnectData.rs = ConnectData.st.executeQuery(sql);
+        if(ConnectData.rs.next()){
+            String username = ConnectData.rs.getString("username");
+            System.out.println(username);
+            
+        }
+    }
 }

@@ -81,26 +81,26 @@ public class GUI extends JFrame {
         c_btn_send.setBorder(topBorder);
         c_btn_send.setFocusPainted(false);
         
-        c_btn_file = new JButton();
+        /*c_btn_file = new JButton();
         c_btn_file.setIcon(new ImageIcon(getClass().getResource("/Image/file.png")));
         c_btn_file.setBounds(402, 475, 49, 40);
         c_btn_file.setBackground(outcolor);
         c_btn_file.setBorder(topBorder);
-        c_btn_file.setFocusPainted(false);
+        c_btn_file.setFocusPainted(false);*/
 
-        c_btn_sticker = new JButton();
+        /*c_btn_sticker = new JButton();
         c_btn_sticker.setIcon(new ImageIcon(getClass().getResource("/Image/sticker.png")));
         c_btn_sticker.setBounds(453, 475, 49, 40);
         c_btn_sticker.setBackground(outcolor);
         c_btn_sticker.setBorder(topBorder);
-        c_btn_sticker.setFocusPainted(false);
+        c_btn_sticker.setFocusPainted(false);*/
 
         pn_center.add(c_label);
         pn_center.add(c_display);
         pn_center.add(c_input);
         pn_center.add(c_btn_send);
-        pn_center.add(c_btn_file);
-        pn_center.add(c_btn_sticker);
+        //pn_center.add(c_btn_file);
+        //pn_center.add(c_btn_sticker);
 //        
         //Panel bên phải dùng dể hiện thị thông tin của người bạn đang chat/ thông tin nhóm
 
@@ -120,16 +120,16 @@ public class GUI extends JFrame {
         pn_top.setBackground(outcolor);
         pn_top.setBounds(0, 0, 1000, 100);
 
-        t_avatar = new JLabel();
+        /*t_avatar = new JLabel();
         t_avatar.setIcon(new ImageIcon(getClass().getResource("/Image/avatar.png")));
-        t_avatar.setBounds(25, 25, 50, 50);
+        t_avatar.setBounds(25, 25, 50, 50);*/
 
         t_name = new JLabel();
         t_name.setText("The Khanh");
         t_name.setFont(new Font("Open Sans", Font.BOLD, 16));
         t_name.setBounds(85, 25, 100, 50);
 
-        pn_top.add(t_avatar);
+        //pn_top.add(t_avatar);
         pn_top.add(t_name);
 
         //Add border vào các Panel

@@ -3,12 +3,16 @@ package doan;
 
 import doan.Connection.UserBUS;
 import doan.Connection.UserDTO;
+import doan.Connection.UserDAO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class Worker implements Runnable {
@@ -81,6 +85,11 @@ public class Worker implements Runnable {
     
     }
     
+    public void friendList() throws SQLException{
+        UserDAO friendlist = new UserDAO();
+        friendlist.friendList();
+    }
+    
     public void Process(String line) throws IOException {
         if(!line.contains("#")){
             this.out.write("Syntax error" + '\n');
@@ -110,6 +119,7 @@ public class Worker implements Runnable {
         try {
             String input = "";
             //setName();
+            friendList();
             sendToAll("user "+ this.myName +" log in to server");
             while (true) {
                 input = in.readLine();
@@ -127,6 +137,8 @@ public class Worker implements Runnable {
             Server.workers.remove(this);
         } catch (IOException e) {
             System.out.println(e);
+        } catch (SQLException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
