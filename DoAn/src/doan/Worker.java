@@ -1,8 +1,13 @@
 package doan;
 
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import doan.Connection.FriendListBUS;
 import doan.Connection.UserBUS;
 import doan.Connection.UserDTO;
+import doan.Connection.FriendListDAO;
+import doan.Connection.FriendListDTO;
 import doan.Connection.UserDAO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,9 +16,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import doan.Connection.DTO.infoUser;
 
 public class Worker implements Runnable {
 
@@ -27,12 +33,12 @@ public class Worker implements Runnable {
         this.in = new BufferedReader(new InputStreamReader(s.getInputStream()));
         this.out = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
     }
-    
-    public void sendToOne(int id, String mess ) throws IOException {
+
+    public void sendToOne(int id, String mess) throws IOException {
         boolean found = false;
-        for(Worker worker: Server.workers) {
-            if(worker.myName == id) {
-                worker.out.write(this.myName+ "#"+mess + '\n');
+        for (Worker worker : Server.workers) {
+            if (worker.myName == id) {
+                worker.out.write(this.myName + "#" + mess + '\n');
                 worker.out.flush();
                 System.out.println("Server write: " + mess + " to " + worker.myName);
                 //save message to DB
@@ -40,35 +46,34 @@ public class Worker implements Runnable {
                 break;
             }
         }
-        if(!found){
+        if (!found) {
             this.out.write("id is not found!" + '\n');
             this.out.flush();
             System.out.println("Server write: id is not found! to " + this.myName);
         }
     }
-    
+
     public void sendToAll(String mess) throws IOException {
-        for(Worker worker: Server.workers) {
+        for (Worker worker : Server.workers) {
             if (!(this.myName == worker.myName)) {
-                worker.out.write(this.myName+ " to all: "+mess + '\n');
+                worker.out.write(this.myName + " to all: " + mess + '\n');
                 worker.out.flush();
                 System.out.println("Server write: " + mess + " to " + worker.myName);
             }
         }
     }
-    
+
     public void systemCommand(String mess) throws IOException {
-        this.out.write("system#"+ mess + "\n");
+        this.out.write("system#" + mess + "\n");
         this.out.flush();
         System.out.println("Send: system#" + mess + " to " + this.myName);
     }
-    
+
 //    public void setName(String name) throws IOException{    
 //        this.myName = name;
 //        //systemCommand("showGUI,"+this.myName);
 //    }
-    
-    public void login(String userName, String password) throws IOException{
+    public void login(String userName, String password) throws IOException, SQLException {
         UserBUS bususer = new UserBUS();
         bususer.docDSuser();
         UserDTO user = new UserDTO();
@@ -78,48 +83,70 @@ public class Worker implements Runnable {
         } else if (userName.equals(user.getUsername()) && password.equals(user.getPassword())) {
             systemCommand("login#success");
             this.myName = user.getId();
+            loginSuccess();
         } else {
             systemCommand("login#Mật khẩu không đúng");
         }
-    
+
     }
-    
-    public void friendList() throws SQLException{
-        UserDAO friendlist = new UserDAO();
-        friendlist.friendList();
+
+    public void loginSuccess() throws SQLException, JsonProcessingException, IOException {
+        UserBUS bususer = new UserBUS();
+        UserDTO user = new UserDTO(); 
+        FriendListBUS friendlistBUS = new FriendListBUS();
+        FriendListDTO friendlist = friendlistBUS.findFriendListByID(this.myName);
+        int[] arr = friendlist.getUsername();
+        ArrayList dsfriend = new ArrayList<infoUser>();
+        for (int i = 0; i < arr.length; i++) {
+            user = bususer.takeInfoUserByID(arr[i]);
+            boolean isOnline = false;
+            for (Worker worker : Server.workers) {
+                if (arr[i] == worker.myName) {
+                    isOnline = true;
+                    break;
+                }
+            }
+            infoUser infouser = new infoUser(arr[i], user.getFullname(), isOnline);
+            dsfriend.add(infouser);
+        }
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String JSONObject = gson.toJson(dsfriend);
+        System.out.println(JSONObject);
+        systemCommand("friendlist#" + JSONObject);
     }
-    
-    public void Process(String line) throws IOException {
-        if(!line.contains("#")){
+
+    public void Process(String line) throws IOException, SQLException {
+        if (!line.contains("#")) {
             this.out.write("Syntax error" + '\n');
             this.out.flush();
             System.out.println("Server write: id is not found! to " + this.myName);
         } else {
             String[] parts = line.split("#");
-            switch(parts[0]){
-                case "all":{
+            switch (parts[0]) {
+                case "all": {
                     sendToAll(parts[1]);
-                } break;
-                case "login":{
-                    login(parts[1],parts[2]);
-                } break;
+                }
+                break;
+                case "login": {
+                    login(parts[1], parts[2]);
+                }
+                break;
                 //useradfabfasdfdas#hello cau
                 default: {
-                    sendToOne(Integer.parseInt(parts[0]),parts[1]);
+                    sendToOne(Integer.parseInt(parts[0]), parts[1]);
                 }
             }
         }
     }
-    
-    
-    
+
     public void run() {
         System.out.println("Client " + socket.toString() + " accepted");
         try {
             String input = "";
             //setName();
-            friendList();
-            sendToAll("user "+ this.myName +" log in to server");
+            sendToAll("user " + this.myName + " log in to server");
+            //friendList();
             while (true) {
                 input = in.readLine();
                 System.out.println("Server received: " + input + " from " + socket.toString() + " # Client " + myName);
@@ -141,3 +168,5 @@ public class Worker implements Runnable {
         }
     }
 }
+
+

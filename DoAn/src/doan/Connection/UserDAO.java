@@ -14,14 +14,19 @@ import javax.swing.JOptionPane;
  * @author acer
  */
 public class UserDAO {
-    public ArrayList docDSSP(){
+
+    public UserDAO() {
+
+    }
+
+    public ArrayList docDSSP() {
         MySQLConnect ConnectData = new MySQLConnect();
         ArrayList dsuser = new ArrayList<UserDTO>();
-        try{
+        try {
             String qry = "select * from user";
             ConnectData.st = ConnectData.conn.createStatement();
             ConnectData.rs = ConnectData.st.executeQuery(qry);
-            while(ConnectData.rs.next()){
+            while (ConnectData.rs.next()) {
                 UserDTO user = new UserDTO();
                 user.setId(ConnectData.rs.getInt(1));
                 user.setUsername(ConnectData.rs.getString(2));
@@ -31,23 +36,27 @@ public class UserDAO {
                 user.setBirthday(ConnectData.rs.getString(6));
                 dsuser.add(user);
             }
-        }
-        catch(SQLException e){
-            JOptionPane.showMessageDialog(null,e.toString());
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.toString());
         }
         ConnectData.MySQLDisconnect();
         return dsuser;
     }
-    public void friendList() throws SQLException{
+
+    public UserDTO takeInfoUserByID(int id) {
         MySQLConnect ConnectData = new MySQLConnect();
-        //ArrayList dsfriendlist = new ArrayList<FriendListDTO>();
-        String sql = "select * from friendlist";
-        ConnectData.st = ConnectData.conn.createStatement();
-        ConnectData.rs = ConnectData.st.executeQuery(sql);
-        if(ConnectData.rs.next()){
-            String username = ConnectData.rs.getString("username");
-            System.out.println(username);
-            
+        UserDTO user = new UserDTO();
+        try {
+            String sql = "select fullname from user where userID = '" + id + "'";
+            ConnectData.st = ConnectData.conn.createStatement();
+            ConnectData.rs = ConnectData.st.executeQuery(sql);
+            while (ConnectData.rs.next()) {
+                user.setFullname(ConnectData.rs.getString(1));
+            }
+        } catch (SQLException e) {
+            System.out.println("loi");
         }
+        ConnectData.MySQLDisconnect();
+        return user;
     }
 }

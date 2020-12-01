@@ -8,10 +8,12 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import doan.Connection.DTO.infoUser;
 import GUI.GUI;
 import GUI.LoginView;
 import GUI.RegisterView;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 class SendMessage implements Runnable {
 
@@ -22,29 +24,30 @@ class SendMessage implements Runnable {
         this.socket = s;
         this.out = o;
     }
-    
-    public void Login(){
+
+    public void Login() {
         try {
             BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
             String id = Client.guiLogin.userText.getText();
             String pass = new String(Client.guiLogin.passwordText.getPassword());
-            System.out.println("Client send: login#" +id +"#"+ pass + '\n');
-            out.write("login#" +id + "#" + pass + '\n');
+            System.out.println("Client send: login#" + id + "#" + pass + '\n');
+            out.write("login#" + id + "#" + pass + '\n');
             out.flush();
         } catch (IOException e) {
-        }        
+        }
     }
 
     public void run() {
-        switch(Client.status){
-            case "login":{
+        switch (Client.status) {
+            case "login": {
                 Login();
-            }break;
-            case "chat":{
-            
+            }
+            break;
+            case "chat": {
+
             }
         }
-        
+
 //        try {
 //            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 //            String data = "";//Client.gui.txtContent.getText();
@@ -77,29 +80,40 @@ class ReceiveMessage implements Runnable {
     }
 
     public void Process(String line) throws IOException {
-        if(!line.contains("#")){
+        if (!line.contains("#")) {
             System.out.println(line);
         } else {
             String[] parts = line.split("#");
             switch (parts[0]) {
                 case "system": {
-                    switch(parts[1]){
-                        case "login":{
-                            switch(parts[2]){
-                                case "success":{
+                    switch (parts[1]) {
+                        case "login": {
+                            switch (parts[2]) {
+                                case "success": {
                                     Client.gui = new GUI();
                                     Client.gui.displayGUI();
                                     Client.gui.setVisible(true);
                                     Client.guiLogin.setVisible(false);
                                     Client.status = "chat";
-                                }break;
-                                default:{
+                                }
+                                break;
+                                default: {
                                     Client.guiLogin.alert(parts[2]);
                                 }
                             }
-                        }break;
+                        }
+                        break;
+                        case "friendlist":
+                            ObjectMapper mapper = new ObjectMapper();
+                            String arr = parts[2];
+                            infoUser[] respone = new Gson().fromJson(arr, infoUser[].class);
+                            for (infoUser s : respone) {
+                                System.out.println("Id: " + s.getId());
+                                System.out.println("Name: " + s.getFullname());
+                                System.out.println("Status: "+ s.isOnline());
+                            }
                     }
-                    
+
                 }
                 break;
                 default: {
@@ -142,7 +156,6 @@ public class Client {
 
     private static SendMessage send;
     private static ReceiveMessage recv;
-    
 
     public static void executeSendMessage() {
         executor.execute(send);
@@ -152,12 +165,12 @@ public class Client {
         socket = new Socket(host, port);
         System.out.println("Client connected");
         status = "login";
-        
+
         guiLogin = new LoginView();
         guiLogin.displayGUI();
         guiLogin.setLocationRelativeTo(null);
         guiLogin.setVisible(true);
-        
+
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         send = new SendMessage(socket, out);

@@ -11,18 +11,22 @@ package doan.Connection;
  */
 public class FriendListDTO {
     private int userID;
-    private String username;
+    private int username[];
     
-    public FriendListDTO(int userID,String username){
+    public FriendListDTO(int userID,int username[]){
         this.userID = userID;
         this.username = username;
+    }
+
+    FriendListDTO() {
+
     }
 
     public int getUserID() {
         return userID;
     }
 
-    public String getUsername() {
+    public int[] getUsername() {
         return username;
     }
 
@@ -30,8 +34,10 @@ public class FriendListDTO {
         this.userID = userID;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(int[] username) {
         this.username = username;
     }
+
+
     
 }
