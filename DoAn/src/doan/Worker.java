@@ -3,6 +3,7 @@ package doan;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import doan.Connection.DTO.infoGroup;
 import doan.Connection.FriendListBUS;
 import doan.Connection.UserBUS;
 import doan.Connection.UserDTO;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import doan.Connection.DTO.infoUser;
+import doan.Connection.GroupChatBUS;
+import doan.Connection.GroupChatDTO;
 
 public class Worker implements Runnable {
 
@@ -83,16 +86,17 @@ public class Worker implements Runnable {
         } else if (userName.equals(user.getUsername()) && password.equals(user.getPassword())) {
             systemCommand("login#success");
             this.myName = user.getId();
-            loginSuccess();
+            showFriendList();
+            showGroupChat();
         } else {
             systemCommand("login#Mật khẩu không đúng");
         }
 
     }
 
-    public void loginSuccess() throws SQLException, JsonProcessingException, IOException {
+    public void showFriendList() throws SQLException, JsonProcessingException, IOException {
         UserBUS bususer = new UserBUS();
-        UserDTO user = new UserDTO(); 
+        UserDTO user = new UserDTO();
         FriendListBUS friendlistBUS = new FriendListBUS();
         FriendListDTO friendlist = friendlistBUS.findFriendListByID(this.myName);
         int[] arr = friendlist.getUsername();
@@ -114,6 +118,26 @@ public class Worker implements Runnable {
         String JSONObject = gson.toJson(dsfriend);
         System.out.println(JSONObject);
         systemCommand("friendlist#" + JSONObject);
+    }
+
+    public void showGroupChat() throws SQLException, JsonProcessingException, IOException {
+        GroupChatBUS groupchatBUS = new GroupChatBUS();
+        groupchatBUS.showGroupChat();
+        ArrayList dsgroup = new ArrayList<infoGroup>();
+        for (GroupChatDTO groupchat : groupchatBUS.dsgroupchat) {
+            int[] arr = groupchat.getMemberlist();
+            for (int i = 0; i < arr.length; i++) {
+                if (arr[i] == this.myName) {
+                    infoGroup infogroup = new infoGroup(groupchat.getGroupID(), groupchat.getGroupname());
+                    dsgroup.add(infogroup);
+                }
+            }
+        }
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String JSONObject = gson.toJson(dsgroup);
+        System.out.println(JSONObject);
+        systemCommand("groupchat#" +JSONObject);
     }
 
     public void Process(String line) throws IOException, SQLException {
@@ -168,5 +192,3 @@ public class Worker implements Runnable {
         }
     }
 }
-
-

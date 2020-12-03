@@ -14,6 +14,7 @@ import GUI.LoginView;
 import GUI.RegisterView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import doan.Connection.DTO.infoGroup;
 
 class SendMessage implements Runnable {
 
@@ -103,19 +104,32 @@ class ReceiveMessage implements Runnable {
                             }
                         }
                         break;
-                        case "friendlist":
+                        case "friendlist": {
                             ObjectMapper mapper = new ObjectMapper();
                             String arr = parts[2];
                             infoUser[] respone = new Gson().fromJson(arr, infoUser[].class);
                             for (infoUser s : respone) {
                                 System.out.println("Id: " + s.getId());
                                 System.out.println("Name: " + s.getFullname());
-                                System.out.println("Status: "+ s.isOnline());
+                                System.out.println("Status: " + s.isOnline());
                             }
+                        }
+                        break;
+                        case "groupchat": {
+                            ObjectMapper mapper = new ObjectMapper();
+                            String arr = parts[2];
+                            infoGroup[] respone = new Gson().fromJson(arr, infoGroup[].class);
+                            for (infoGroup s : respone) {
+                                System.out.println("Id: " + s.getGroupID());
+                                System.out.println("Name: " + s.getGroupname());
+                            }
+                        }
+                        break;
                     }
 
                 }
                 break;
+
                 default: {
                     //Client user2: TheKhanh(nguoinhan)#noidungchat
                     //======= Client TK: user2(nguoigui)#noidungchat
@@ -127,12 +141,15 @@ class ReceiveMessage implements Runnable {
         }
     }
 
+    
+
     public void run() {
         try {
             while (true) {
                 String data = in.readLine();
                 Process(data);
                 System.out.println("Receive: " + data);
+
             }
         } catch (IOException e) {
         }
