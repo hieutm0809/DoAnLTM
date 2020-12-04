@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 import doan.Connection.DTO.infoUser;
 import doan.Connection.GroupChatBUS;
 import doan.Connection.GroupChatDTO;
+import doan.Connection.MessageFriendBUS;
+import doan.Connection.MessageFriendDTO;
 
 public class Worker implements Runnable {
 
@@ -87,6 +89,11 @@ public class Worker implements Runnable {
             this.myName = user.getId();
             showFriendList();
             showGroupChat();
+//            for (Worker worker : Server.workers) {
+//                if (!(this.myName == worker.myName)) {
+                    showMessageFriend(4,5);
+//                }
+//            }
         } else {
             systemCommand("login#Mật khẩu không đúng");
         }
@@ -149,7 +156,14 @@ public class Worker implements Runnable {
         systemCommand("groupchat#" + JSONObject);
     }
     
-    
+    public void showMessageFriend(int participant1, int participant2) throws JsonProcessingException {
+        MessageFriendBUS messagefriendBUS = new MessageFriendBUS();
+        MessageFriendDTO messagefriend = new MessageFriendDTO();
+        messagefriend = messagefriendBUS.showMessageFriend(participant1, participant2);
+        System.out.println(messagefriend.getParticipant1());
+        System.out.println(messagefriend.getParticipant2());
+        System.out.println(messagefriend.getContent());
+    }
     
     public void Process(String line) throws IOException, SQLException {
         if (!line.contains("#")) {
