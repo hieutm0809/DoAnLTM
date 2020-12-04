@@ -7,9 +7,7 @@ import doan.Connection.DTO.infoGroup;
 import doan.Connection.FriendListBUS;
 import doan.Connection.UserBUS;
 import doan.Connection.UserDTO;
-import doan.Connection.FriendListDAO;
 import doan.Connection.FriendListDTO;
-import doan.Connection.UserDAO;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -81,6 +79,7 @@ public class Worker implements Runnable {
         bususer.docDSuser();
         UserDTO user = new UserDTO();
         user = bususer.Tim(userName);
+
         if (user == null) {
             systemCommand("login#Tài khoản không tồn tại");
         } else if (userName.equals(user.getUsername()) && password.equals(user.getPassword())) {
@@ -137,7 +136,7 @@ public class Worker implements Runnable {
         Gson gson = gsonBuilder.create();
         String JSONObject = gson.toJson(dsgroup);
         System.out.println(JSONObject);
-        systemCommand("groupchat#" +JSONObject);
+        systemCommand("groupchat#" + JSONObject);
     }
 
     public void Process(String line) throws IOException, SQLException {

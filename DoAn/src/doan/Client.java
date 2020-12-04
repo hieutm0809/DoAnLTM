@@ -14,7 +14,6 @@ import GUI.LoginView;
 import GUI.RegisterView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import static doan.Client.gui;
 import doan.Connection.DTO.infoGroup;
 import java.awt.Color;
 import java.awt.Font;
@@ -97,6 +96,7 @@ class ReceiveMessage implements Runnable {
             System.out.println(line);
         } else {
             String[] parts = line.split("#");
+
             switch (parts[0]) {
                 case "system": {
                     switch (parts[1]) {
@@ -105,6 +105,8 @@ class ReceiveMessage implements Runnable {
                                 case "success": {
                                     Client.gui = new GUI();
                                     Client.guiLogin.setVisible(false);
+                                    Client.gui.displayGUI();
+                                    Client.gui.setVisible(true);
                                     Client.status = "chat";
                                 }
                                 break;
@@ -115,23 +117,19 @@ class ReceiveMessage implements Runnable {
                         }
                         break;
                         case "friendlist": {
-                            ObjectMapper mapper = new ObjectMapper();
+
                             String arr = parts[2];
-                            FriendList(arr);
+                            Client.gui.FriendList(arr);
+
                         }
                         break;
                         case "groupchat": {
-                            ObjectMapper mapper = new ObjectMapper();
+
                             String arr = parts[2];
-                            infoGroup[] respone = new Gson().fromJson(arr, infoGroup[].class);
-                            for (infoGroup s : respone) {
-                                System.out.println("Id: " + s.getGroupID());
-                                System.out.println("Name: " + s.getGroupname());
-                            }
+                            Client.gui.GroupChat(arr);
                         }
                         break;
                     }
-
                 }
                 break;
 
@@ -144,58 +142,6 @@ class ReceiveMessage implements Runnable {
                 }
             }
         }
-    }
-
-    public void FriendList(String arr) {
-        infoUser[] respone = new Gson().fromJson(arr, infoUser[].class);
-        DefaultListModel model = new DefaultListModel();
-
-        for (infoUser s : respone) {
-            System.out.println("Id: " + s.getId());
-            System.out.println("Name: " + s.getFullname());
-            System.out.println("Status: " + s.isOnline());
-            model.addElement(s.getFullname());
-        }
-        JList list = new JList(model);
-        list.setFont(new Font("Open Sans", Font.BOLD, 14));
-        list.setBackground(new Color(250, 250, 250));
-        list.setFixedCellHeight(50);
-        list.setFixedCellWidth(230);
-
-        Color outline = new Color(230, 230, 230);
-        Border leftBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, outline);
-
-        DefaultListCellRenderer renderer = (DefaultListCellRenderer) list.getCellRenderer();
-        renderer.setHorizontalAlignment(JLabel.LEFT);
-
-        list.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                JList list = (JList) evt.getSource();
-                // rồi viết code bắt sự kiện click ở trong này;
-                //ví dụ như này
-                /*  if (evt.getClickCount() == 2) {
-
-                    // Double-click detected
-                    int index = list.locationToIndex(evt.getPoint());
-                    JOptionPane.showMessageDialog(null, "Heeloo mina");
-                } else if (evt.getClickCount() == 3) {
-
-                    // Triple-click detected
-                    int index = list.locationToIndex(evt.getPoint());
-                }
-                 */
-            }
-        });
-        JPanel pn = new JPanel();
-        pn.setBounds(0, 100, 250, 620);
-        pn.setBackground(new Color(250, 250, 250));
-        pn.setBorder(leftBorder);
-        pn.add(list);
-
-        Client.gui = new GUI();
-        gui.add(pn);
-        gui.displayGUI();
-        Client.gui.setVisible(true);
     }
 
     public void run() {
@@ -217,7 +163,7 @@ public class Client {
     private static int port = 1234;
     private static Socket socket;
     static ExecutorService executor;
-    static GUI gui;
+    public static GUI gui;
     static LoginView guiLogin;
     static RegisterView guiRegister;
     static String status;
@@ -251,3 +197,9 @@ public class Client {
         executor.execute(recv);
     }
 }
+
+//JLabel lb = new JLabel("Groups", JLabel.LEFT);
+//        lb.setBounds(0, 300, 240, 30);
+//		
+//		 JLabel lb = new JLabel("Friends", JLabel.LEFT);
+//        lb.setBounds(0, 0, 240, 30);

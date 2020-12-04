@@ -28,7 +28,15 @@ public class UserBUS {
         }
         return null;
     }
-
+    public UserDTO timFullname(){
+        String fullName="";
+        for (UserDTO user : dsuser) {
+            if (user.getFullname().equals(fullName)) {
+                return user;
+            }
+        }
+        return null;
+    }
     public UserDTO takeInfoUserByID(int id) {
         UserDTO user = new UserDTO();
         UserDAO userDAO = new UserDAO();

@@ -1,10 +1,16 @@
 package GUI;
 
+import com.google.gson.Gson;
+import doan.Client;
+import doan.Connection.DTO.infoGroup;
+import doan.Connection.DTO.infoUser;
 import doan.Connection.UserDTO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.border.Border;
 
 public class GUI extends JFrame {
@@ -79,7 +85,7 @@ public class GUI extends JFrame {
         c_btn_send.setBackground(outcolor);
         c_btn_send.setBorder(topBorder);
         c_btn_send.setFocusPainted(false);
-        
+
         /*c_btn_file = new JButton();
         c_btn_file.setIcon(new ImageIcon(getClass().getResource("/Image/file.png")));
         c_btn_file.setBounds(402, 475, 49, 40);
@@ -87,13 +93,12 @@ public class GUI extends JFrame {
         c_btn_file.setBorder(topBorder);
         c_btn_file.setFocusPainted(false);*/
 
-        /*c_btn_sticker = new JButton();
+ /*c_btn_sticker = new JButton();
         c_btn_sticker.setIcon(new ImageIcon(getClass().getResource("/Image/sticker.png")));
         c_btn_sticker.setBounds(453, 475, 49, 40);
         c_btn_sticker.setBackground(outcolor);
         c_btn_sticker.setBorder(topBorder);
         c_btn_sticker.setFocusPainted(false);*/
-
         pn_center.add(c_label);
         pn_center.add(c_display);
         pn_center.add(c_input);
@@ -122,7 +127,6 @@ public class GUI extends JFrame {
         /*t_avatar = new JLabel();
         t_avatar.setIcon(new ImageIcon(getClass().getResource("/Image/avatar.png")));
         t_avatar.setBounds(25, 25, 50, 50);*/
-
         t_name = new JLabel();
         t_name.setText("The Khanh");
         t_name.setFont(new Font("Open Sans", Font.BOLD, 16));
@@ -143,6 +147,14 @@ public class GUI extends JFrame {
         this.add(pn_center);
     }
 
+    public void setC_Label(String temp) {
+        c_label.setText(temp);
+    }
+
+    public void setT_Name(String temp) {
+        t_name.setText(temp);
+    }
+
     public static void centreWindow(Window frame) {
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
@@ -150,7 +162,68 @@ public class GUI extends JFrame {
         frame.setLocation(x, y);
     }
 
+    public void FriendList(String arr) {
+        infoUser[] respone = new Gson().fromJson(arr, infoUser[].class);
+        DefaultListModel model = new DefaultListModel();
 
+        for (infoUser s : respone) {
+            System.out.println("Id: " + s.getId());
+            System.out.println("Name: " + s.getFullname());
+            System.out.println("Status: " + s.isOnline());
+            model.addElement(s.getFullname());
+        }
+        JList list = new JList(model);
+        list.setFont(new Font("Open Sans", Font.BOLD, 14));
+        list.setBackground(new Color(250, 250, 250));
+        list.setFixedCellHeight(50);
+        list.setFixedCellWidth(230);
+
+        Color outline = new Color(230, 230, 230);
+        Border leftBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, outline);
+
+        DefaultListCellRenderer renderer = (DefaultListCellRenderer) list.getCellRenderer();
+        renderer.setHorizontalAlignment(JLabel.LEFT);
+
+        list.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList) evt.getSource();
+                String s = (String) list.getSelectedValue();
+                Client.gui.setC_Label(s);
+
+            }
+        });
+        pn_left.add(list);
+    }
+
+    public void GroupChat(String arr) {
+        infoGroup[] respone = new Gson().fromJson(arr, infoGroup[].class);
+        DefaultListModel model = new DefaultListModel();
+
+        for (infoGroup s : respone) {
+            System.out.println("Id: " + s.getGroupID());
+            System.out.println("Name: " + s.getGroupname());
+            model.addElement(s.getGroupname());
+        }
+        JList list = new JList(model);
+        list.setFont(new Font("Open Sans", Font.BOLD, 14));
+        list.setBackground(new Color(250, 250, 250));
+        list.setFixedCellHeight(50);
+        list.setFixedCellWidth(230);
+
+        Color outline = new Color(230, 230, 230);
+        Border leftBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, outline);
+
+        DefaultListCellRenderer renderer = (DefaultListCellRenderer) list.getCellRenderer();
+        renderer.setHorizontalAlignment(JLabel.LEFT);
+
+        list.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+
+            }
+        });
+        pn_left.add(list);
+
+    }
 //    public static void main(String[] args) {
 //        GUI test = new GUI();
 //        test.displayGUI();
