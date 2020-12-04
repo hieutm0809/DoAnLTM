@@ -29,6 +29,7 @@ public class GUI extends JFrame {
     Border leftBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, outline);
     Border bottomBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, outline);
     Border rightBorder = BorderFactory.createMatteBorder(0, 0, 0, 2, outline);
+    public static String name;
 
     public GUI() {
 
@@ -128,9 +129,9 @@ public class GUI extends JFrame {
         t_avatar.setIcon(new ImageIcon(getClass().getResource("/Image/avatar.png")));
         t_avatar.setBounds(25, 25, 50, 50);*/
         t_name = new JLabel();
-        t_name.setText("The Khanh");
+        t_name.setText(name);
         t_name.setFont(new Font("Open Sans", Font.BOLD, 16));
-        t_name.setBounds(85, 25, 100, 50);
+        t_name.setBounds(85, 25, 150, 50);
 
         //pn_top.add(t_avatar);
         pn_top.add(t_name);

@@ -83,7 +83,7 @@ public class Worker implements Runnable {
         if (user == null) {
             systemCommand("login#Tài khoản không tồn tại");
         } else if (userName.equals(user.getUsername()) && password.equals(user.getPassword())) {
-            systemCommand("login#success");
+            systemCommand("login#success#" + user.getFullname());
             this.myName = user.getId();
             showFriendList();
             showGroupChat();
@@ -98,7 +98,12 @@ public class Worker implements Runnable {
         UserDTO user = new UserDTO();
         FriendListBUS friendlistBUS = new FriendListBUS();
         FriendListDTO friendlist = friendlistBUS.findFriendListByID(this.myName);
+        
         int[] arr = friendlist.getUsername();
+        if(arr == null){
+            systemCommand("friendlist#");
+            return;
+        }
         ArrayList dsfriend = new ArrayList<infoUser>();
         for (int i = 0; i < arr.length; i++) {
             user = bususer.takeInfoUserByID(arr[i]);
@@ -129,8 +134,13 @@ public class Worker implements Runnable {
                 if (arr[i] == this.myName) {
                     infoGroup infogroup = new infoGroup(groupchat.getGroupID(), groupchat.getGroupname());
                     dsgroup.add(infogroup);
+                    break;
                 }
             }
+        }
+        if(dsgroup.size() == 0){
+            systemCommand("groupchat#");
+            return;
         }
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -138,7 +148,9 @@ public class Worker implements Runnable {
         System.out.println(JSONObject);
         systemCommand("groupchat#" + JSONObject);
     }
-
+    
+    
+    
     public void Process(String line) throws IOException, SQLException {
         if (!line.contains("#")) {
             this.out.write("Syntax error" + '\n');

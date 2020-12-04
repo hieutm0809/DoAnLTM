@@ -103,11 +103,12 @@ class ReceiveMessage implements Runnable {
                         case "login": {
                             switch (parts[2]) {
                                 case "success": {
-                                    Client.gui = new GUI();
+                                    Client.gui = new GUI(); 
+                                    Client.status = "chat";
+                                    Client.gui.name = parts[3];
                                     Client.guiLogin.setVisible(false);
                                     Client.gui.displayGUI();
-                                    Client.gui.setVisible(true);
-                                    Client.status = "chat";
+                                    Client.gui.setVisible(true);                                    
                                 }
                                 break;
                                 default: {
@@ -117,16 +118,17 @@ class ReceiveMessage implements Runnable {
                         }
                         break;
                         case "friendlist": {
-
-                            String arr = parts[2];
-                            Client.gui.FriendList(arr);
-
+                            if(parts.length == 3){
+                                String arr = parts[2];
+                                Client.gui.FriendList(arr);
+                            }
                         }
                         break;
                         case "groupchat": {
-
-                            String arr = parts[2];
-                            Client.gui.GroupChat(arr);
+                            if(parts.length == 3){
+                                String arr = parts[2];
+                                Client.gui.GroupChat(arr);
+                            }
                         }
                         break;
                     }
