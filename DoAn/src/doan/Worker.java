@@ -156,13 +156,11 @@ public class Worker implements Runnable {
         systemCommand("groupchat#" + JSONObject);
     }
     
-    public void showMessageFriend(int participant1, int participant2) throws JsonProcessingException {
+    public void showMessageFriend(int participant1, int participant2) throws JsonProcessingException, IOException {
         MessageFriendBUS messagefriendBUS = new MessageFriendBUS();
         MessageFriendDTO messagefriend = new MessageFriendDTO();
         messagefriend = messagefriendBUS.showMessageFriend(participant1, participant2);
-        System.out.println(messagefriend.getParticipant1());
-        System.out.println(messagefriend.getParticipant2());
-        System.out.println(messagefriend.getContent());
+        systemCommand("mess#" + messagefriend.getContent());
     }
     
     public void Process(String line) throws IOException, SQLException {

@@ -26,7 +26,7 @@ public class MessageFriendDAO {
                 int tmp = ConnectData.rs.getInt(1);
                 messagefriend.setParticipant1(ConnectData.rs.getInt(2));
                 messagefriend.setParticipant2(ConnectData.rs.getInt(3));
-                messagefriend.setContent("abc");
+                messagefriend.setContent(ConnectData.rs.getString(4));
             }
         } catch (SQLException e) {
             System.out.println("loi");

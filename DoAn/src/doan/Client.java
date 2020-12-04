@@ -56,7 +56,7 @@ class SendMessage implements Runnable {
             }
             break;
             case "chat": {
-
+           // mode
             }
         }
 
@@ -79,6 +79,7 @@ class SendMessage implements Runnable {
 //        } catch (IOException e) {
 //        }
     }
+    
 }
 
 class ReceiveMessage implements Runnable {
@@ -176,7 +177,9 @@ public class Client {
 
     private static SendMessage send;
     private static ReceiveMessage recv;
-
+    
+    public static int id;
+    
     public static void executeSendMessage() {
         executor.execute(send);
     }
