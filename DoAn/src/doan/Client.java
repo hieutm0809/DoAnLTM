@@ -14,7 +14,19 @@ import GUI.LoginView;
 import GUI.RegisterView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import static doan.Client.gui;
 import doan.Connection.DTO.infoGroup;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 class SendMessage implements Runnable {
 
@@ -92,8 +104,6 @@ class ReceiveMessage implements Runnable {
                             switch (parts[2]) {
                                 case "success": {
                                     Client.gui = new GUI();
-                                    Client.gui.displayGUI();
-                                    Client.gui.setVisible(true);
                                     Client.guiLogin.setVisible(false);
                                     Client.status = "chat";
                                 }
@@ -107,12 +117,7 @@ class ReceiveMessage implements Runnable {
                         case "friendlist": {
                             ObjectMapper mapper = new ObjectMapper();
                             String arr = parts[2];
-                            infoUser[] respone = new Gson().fromJson(arr, infoUser[].class);
-                            for (infoUser s : respone) {
-                                System.out.println("Id: " + s.getId());
-                                System.out.println("Name: " + s.getFullname());
-                                System.out.println("Status: " + s.isOnline());
-                            }
+                            FriendList(arr);
                         }
                         break;
                         case "groupchat": {
@@ -141,7 +146,57 @@ class ReceiveMessage implements Runnable {
         }
     }
 
-    
+    public void FriendList(String arr) {
+        infoUser[] respone = new Gson().fromJson(arr, infoUser[].class);
+        DefaultListModel model = new DefaultListModel();
+
+        for (infoUser s : respone) {
+            System.out.println("Id: " + s.getId());
+            System.out.println("Name: " + s.getFullname());
+            System.out.println("Status: " + s.isOnline());
+            model.addElement(s.getFullname());
+        }
+        JList list = new JList(model);
+        list.setFont(new Font("Open Sans", Font.BOLD, 14));
+        list.setBackground(new Color(250, 250, 250));
+        list.setFixedCellHeight(50);
+        list.setFixedCellWidth(230);
+
+        Color outline = new Color(230, 230, 230);
+        Border leftBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, outline);
+
+        DefaultListCellRenderer renderer = (DefaultListCellRenderer) list.getCellRenderer();
+        renderer.setHorizontalAlignment(JLabel.LEFT);
+
+        list.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList) evt.getSource();
+                // rồi viết code bắt sự kiện click ở trong này;
+                //ví dụ như này
+                /*  if (evt.getClickCount() == 2) {
+
+                    // Double-click detected
+                    int index = list.locationToIndex(evt.getPoint());
+                    JOptionPane.showMessageDialog(null, "Heeloo mina");
+                } else if (evt.getClickCount() == 3) {
+
+                    // Triple-click detected
+                    int index = list.locationToIndex(evt.getPoint());
+                }
+                 */
+            }
+        });
+        JPanel pn = new JPanel();
+        pn.setBounds(0, 100, 250, 620);
+        pn.setBackground(new Color(250, 250, 250));
+        pn.setBorder(leftBorder);
+        pn.add(list);
+
+        Client.gui = new GUI();
+        gui.add(pn);
+        gui.displayGUI();
+        Client.gui.setVisible(true);
+    }
 
     public void run() {
         try {

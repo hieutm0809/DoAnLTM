@@ -46,7 +46,6 @@ public class GUI extends JFrame {
 //        pn_left = new JPanel();
 //        pn_left.setLayout(null);
         pn_left = new JPanel();
-        pn_left.add(listUserDTO = createListUserDTOs());
         pn_left.setBackground(outcolor);
         pn_left.setBounds(0, 100, 250, 620);
 
@@ -151,23 +150,6 @@ public class GUI extends JFrame {
         frame.setLocation(x, y);
     }
 
-    private JList<UserDTO> createListUserDTOs() {
-        // create List model
-        DefaultListModel<UserDTO> model = new DefaultListModel<>();
-        // add item to model
-        model.addElement(new UserDTO(0,"TheKhanh", "123","","",""));
-        model.addElement(new UserDTO(0,"TheKhanh1", "123","","",""));
-        model.addElement(new UserDTO(0,"TheKhanh2", "123","","",""));
-        model.addElement(new UserDTO(0,"TheKhanh3", "123","","",""));
-        model.addElement(new UserDTO(0,"TheKhanh4", "123","","",""));
-        model.addElement(new UserDTO(0,"TheKhanh5", "123","","",""));
-
-        // create JList with model
-        JList<UserDTO> list = new JList<UserDTO>(model);
-        // set cell renderer 
-        list.setCellRenderer(new UserDTORenderer());
-        return list;
-    }
 
 //    public static void main(String[] args) {
 //        GUI test = new GUI();
