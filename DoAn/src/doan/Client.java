@@ -15,6 +15,7 @@ import GUI.RegisterView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import doan.Connection.DTO.contentMessageFriend;
+import doan.Connection.DTO.contentMessageGroup;
 import doan.Connection.DTO.infoGroup;
 import doan.Connection.UserBUS;
 import doan.Connection.UserDTO;
@@ -139,7 +140,6 @@ class ReceiveMessage implements Runnable {
                                     Client.name = parts[3];
                                     Client.guiLogin.setVisible(false);
                                     Client.gui.displayGUI();
-                                    Client.gui.setDisableInput();
                                     Client.gui.setVisible(true);
                                 }
                                 break;
@@ -168,6 +168,20 @@ class ReceiveMessage implements Runnable {
                                 String arr = parts[2];
                                 contentMessageFriend[] respone = new Gson().fromJson(arr, contentMessageFriend[].class);
                                 for (contentMessageFriend s : respone) {
+                                    UserBUS bususer = new UserBUS();
+                                    bususer.docDSuser();
+                                    UserDTO user = new UserDTO();
+                                    user = bususer.takeInfoUserByID(s.getFrom());
+                                    Client.gui.c_display.append(user.getFullname() + ": " + s.getContent()+'\n');
+                                }
+                            }
+                        }
+                        break;
+                        case "showMessageGroup": {
+                            if(parts.length == 3) {
+                                String arr = parts[2];
+                                contentMessageGroup[] respone = new Gson().fromJson(arr, contentMessageGroup[].class);
+                                for (contentMessageGroup s : respone) {
                                     UserBUS bususer = new UserBUS();
                                     bususer.docDSuser();
                                     UserDTO user = new UserDTO();

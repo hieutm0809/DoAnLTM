@@ -23,6 +23,8 @@ import doan.Connection.GroupChatBUS;
 import doan.Connection.GroupChatDTO;
 import doan.Connection.MessageFriendBUS;
 import doan.Connection.MessageFriendDTO;
+import doan.Connection.MessageGroupBUS;
+import doan.Connection.MessageGroupDTO;
 
 public class Worker implements Runnable {
 
@@ -154,7 +156,18 @@ public class Worker implements Runnable {
         }
         systemCommand("showMessageFriend#" + messagefriend.getContent());
     }
-
+    
+    public void showMessageGroup(int groupID) throws JsonProcessingException, IOException {
+        MessageGroupBUS messagegroupBUS = new MessageGroupBUS();
+        MessageGroupDTO messagegroup = new MessageGroupDTO();
+        messagegroup = messagegroupBUS.showMessageGroup(groupID);
+        if (messagegroup.getContent() == null) {
+            systemCommand("showMessageGroup#");
+            return;
+        }
+        systemCommand("showMessageGroup#" + messagegroup.getContent());
+    }
+    
     public void Process(String line) throws IOException, SQLException {
         if (!line.contains("#")) {
             this.out.write("Syntax error" + '\n');
@@ -173,6 +186,10 @@ public class Worker implements Runnable {
                 break;
                 case "showMessageFriend": {
                     showMessageFriend(this.myName, Integer.parseInt(parts[1]));
+                }
+                break;
+                case "showMessageGroup": {
+                    showMessageGroup(Integer.parseInt(parts[1]));
                 }
                 break;
                 default: {
