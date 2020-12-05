@@ -200,7 +200,7 @@ public class GUI extends JFrame {
                 Client.chatTo = s.getId();
                 Client.chatMode = "oneToOne";
                 GUI.c_display.setText("");
-                Client.systemSendMessage("showMessage#"+ s.getId());
+                Client.systemSendMessage("showMessageFriend#"+ s.getId());
             }
         });
         pn_left.add(list);

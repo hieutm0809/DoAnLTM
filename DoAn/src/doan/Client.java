@@ -16,6 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import doan.Connection.DTO.contentMessageFriend;
 import doan.Connection.DTO.infoGroup;
+import doan.Connection.UserBUS;
+import doan.Connection.UserDTO;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
@@ -105,7 +107,7 @@ class SendMessage implements Runnable {
         out.flush();
 
         Client.gui.c_input.setText("");
-        Client.gui.c_display.append(Client.name + "#" + data + '\n');
+        Client.gui.c_display.append(Client.name + " : " + data + '\n');
     }
 }
 
@@ -160,12 +162,16 @@ class ReceiveMessage implements Runnable {
                             }
                         }
                         break;
-                        case "showMessage": {
+                        case "showMessageFriend": {
                             if(parts.length == 3) {
                                 String arr = parts[2];
                                 contentMessageFriend[] respone = new Gson().fromJson(arr, contentMessageFriend[].class);
                                 for (contentMessageFriend s : respone) {
-                                    Client.gui.c_display.append(s.getFrom() + " : " + s.getContent()+'\n');
+                                    UserBUS bususer = new UserBUS();
+                                    bususer.docDSuser();
+                                    UserDTO user = new UserDTO();
+                                    user = bususer.takeInfoUserByID(s.getFrom());
+                                    Client.gui.c_display.append(user.getFullname() + " : " + s.getContent()+'\n');
                                 }
                             }
                         }
@@ -175,7 +181,11 @@ class ReceiveMessage implements Runnable {
                 break;
 
                 default: {
-                    Client.gui.c_display.append(parts[0]+" : " +parts[1]);
+                    UserBUS bususer = new UserBUS();
+                    bususer.docDSuser();
+                    UserDTO user = new UserDTO();
+                    user = bususer.takeInfoUserByID(Integer.parseInt(parts[0]));
+                    Client.gui.c_display.append(user.getFullname() + " : " +parts[1] +'\n');
                 }
             }
         }

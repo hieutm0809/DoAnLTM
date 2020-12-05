@@ -149,10 +149,10 @@ public class Worker implements Runnable {
         MessageFriendDTO messagefriend = new MessageFriendDTO();
         messagefriend = messagefriendBUS.showMessageFriend(participant1, participant2);
         if (messagefriend.getContent() == null) {
-            systemCommand("showMessage#");
+            systemCommand("showMessageFriend#");
             return;
         }
-        systemCommand("showMessage#" + messagefriend.getContent());
+        systemCommand("showMessageFriend#" + messagefriend.getContent());
     }
 
     public void Process(String line) throws IOException, SQLException {
@@ -171,7 +171,7 @@ public class Worker implements Runnable {
                     login(parts[1], parts[2]);
                 }
                 break;
-                case "showMessage": {
+                case "showMessageFriend": {
                     showMessageFriend(this.myName, Integer.parseInt(parts[1]));
                 }
                 break;
