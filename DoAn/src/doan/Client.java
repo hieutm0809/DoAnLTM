@@ -139,6 +139,7 @@ class ReceiveMessage implements Runnable {
                                     Client.name = parts[3];
                                     Client.guiLogin.setVisible(false);
                                     Client.gui.displayGUI();
+                                    Client.gui.setDisableInput();
                                     Client.gui.setVisible(true);
                                 }
                                 break;
@@ -171,7 +172,7 @@ class ReceiveMessage implements Runnable {
                                     bususer.docDSuser();
                                     UserDTO user = new UserDTO();
                                     user = bususer.takeInfoUserByID(s.getFrom());
-                                    Client.gui.c_display.append(user.getFullname() + " : " + s.getContent()+'\n');
+                                    Client.gui.c_display.append(user.getFullname() + ": " + s.getContent()+'\n');
                                 }
                             }
                         }
@@ -185,7 +186,7 @@ class ReceiveMessage implements Runnable {
                     bususer.docDSuser();
                     UserDTO user = new UserDTO();
                     user = bususer.takeInfoUserByID(Integer.parseInt(parts[0]));
-                    Client.gui.c_display.append(user.getFullname() + " : " +parts[1] +'\n');
+                    Client.gui.c_display.append(user.getFullname() + ": " +parts[1] +'\n');
                 }
             }
         }

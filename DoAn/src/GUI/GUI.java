@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import doan.Client;
 import doan.Connection.DTO.infoGroup;
 import doan.Connection.DTO.infoUser;
-import doan.Connection.UserDTO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,16 +11,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.border.Border;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 public class GUI extends JFrame {
 
-    private JList<UserDTO> listUserDTO;
     JPanel pn_left, pn_right, pn_center, pn_top;
-    JButton c_btn_send, c_btn_file, c_btn_sticker;
+    JButton c_btn_send, c_btn_file, c_btn_sticker, t_btn_addfr, t_btn_creategr, r_btn_addgr;
     public static JTextArea c_input, c_display;
-    JLabel c_label, t_avatar, t_name, user1, user2, user3, r_name, r_email;
+    JLabel c_label, t_avatar, t_name, t_addfr, t_creategr, r_addgr, r_member;
     Font font = new Font("Open Sans", Font.PLAIN, 20);
     Color outcolor = new Color(250, 250, 250);
     Color incolor = new Color(255, 255, 255);
@@ -74,6 +70,7 @@ public class GUI extends JFrame {
         c_display.setEditable(false);
         c_display.setBackground(incolor);
         c_display.setBounds(0, 35, 500, 400);
+        c_display.setFont(new Font("Open Sans", Font.PLAIN, 16));
 
         c_input = new JTextArea();
         c_input.setBounds(0, 435, 400, 80);
@@ -121,11 +118,21 @@ public class GUI extends JFrame {
         pn_right.setBackground(outcolor);
         pn_right.setBounds(750, 100, 250, 620);
 
-        r_name = new JLabel();
-        r_name.setFont(new Font("Open Sans", Font.BOLD, 20));
-        r_name.setBounds(80, 20, 100, 70);
+        r_addgr = new JLabel("Add");
+        r_addgr.setBounds(85, 30, 100, 50);
+        r_addgr.setFont(font);
+        r_btn_addgr = new JButton();
+        r_btn_addgr.setIcon(new ImageIcon(getClass().getResource("/Image/addgr.png")));
+        r_btn_addgr.setBounds(25, 30, 50, 50);
+        r_btn_addgr.setFocusPainted(false);
+        r_btn_addgr.setBorder(nullBorder);
+        r_btn_addgr.setBackground(outcolor);
 
-        pn_right.add(r_name);
+        r_addgr.setVisible(false);
+        r_btn_addgr.setVisible(false);
+        pn_right.add(r_addgr);
+        pn_right.add(r_btn_addgr);
+
         //Panel trên cùng dùng để hiện thị thông tin của user
         pn_top = new JPanel();
         pn_top.setLayout(null);
@@ -140,8 +147,33 @@ public class GUI extends JFrame {
         t_name.setFont(new Font("Open Sans", Font.BOLD, 16));
         t_name.setBounds(85, 25, 150, 50);
 
+        t_addfr = new JLabel("Add Friend");
+        t_addfr.setBounds(650, 25, 100, 50);
+        t_addfr.setFont(new Font("Open Sans", Font.BOLD, 16));
+        t_btn_addfr = new JButton();
+        t_btn_addfr.setIcon(new ImageIcon(getClass().getResource("/Image/fr.png")));
+        t_btn_addfr.setBounds(600, 25, 50, 50);
+        t_btn_addfr.setFocusPainted(false);
+        t_btn_addfr.setBorder(nullBorder);
+        t_btn_addfr.setBackground(outcolor);
+
+        t_creategr = new JLabel("Create Group");
+        t_creategr.setBounds(820, 25, 120, 50);
+        t_creategr.setFont(new Font("Open Sans", Font.BOLD, 16));
+
+        t_btn_creategr = new JButton();
+        t_btn_creategr.setIcon(new ImageIcon(getClass().getResource("/Image/gr.png")));
+        t_btn_creategr.setBounds(770, 25, 50, 50);
+        t_btn_creategr.setFocusPainted(false);
+        t_btn_creategr.setBorder(nullBorder);
+        t_btn_creategr.setBackground(outcolor);
+
         pn_top.add(t_avatar);
         pn_top.add(t_name);
+        pn_top.add(t_addfr);
+        pn_top.add(t_creategr);
+        pn_top.add(t_btn_addfr);
+        pn_top.add(t_btn_creategr);
 
         //Add border vào các Panel
         pn_left.setBorder(rightBorder);
@@ -161,6 +193,14 @@ public class GUI extends JFrame {
 
     public void setT_Name(String temp) {
         t_name.setText(temp);
+    }
+
+    public void setDisableInput() {
+        c_input.setFocusable(false);
+        c_input.setBackground(outcolor);
+        c_display.setBackground(outcolor);
+        c_label.setBackground(outcolor);
+        c_btn_send.setEnabled(false);
     }
 
     public static void centreWindow(Window frame) {
@@ -200,7 +240,14 @@ public class GUI extends JFrame {
                 Client.chatTo = s.getId();
                 Client.chatMode = "oneToOne";
                 GUI.c_display.setText("");
-                Client.systemSendMessage("showMessageFriend#"+ s.getId());
+                Client.systemSendMessage("showMessageFriend#" + s.getId());
+                c_input.setFocusable(true);
+                c_input.setBackground(incolor);
+                c_display.setBackground(incolor);
+                c_label.setBackground(incolor);
+                c_btn_send.setEnabled(true);
+                r_addgr.setVisible(false);
+                r_btn_addgr.setVisible(false);
             }
         });
         pn_left.add(list);
@@ -235,6 +282,13 @@ public class GUI extends JFrame {
                 Client.gui.setC_Label(s.getGroupname());
                 Client.chatTo = s.getGroupID();
                 Client.chatMode = "group";
+                c_input.setFocusable(true);
+                c_input.setBackground(incolor);
+                c_display.setBackground(incolor);
+                c_label.setBackground(incolor);
+                c_btn_send.setEnabled(true);
+                r_addgr.setVisible(true);
+                r_btn_addgr.setVisible(true);
             }
         });
         pn_left.add(list);
@@ -246,4 +300,3 @@ public class GUI extends JFrame {
 //        test.setVisible(true);
 //    }
 }
-
