@@ -43,4 +43,20 @@ public class GroupChatDAO {
         ConnectData.MySQLDisconnect();
         return dsgroupchat;
     }
+    
+    public GroupChatDTO getMemberListByGroupID(int groupID) throws SQLException, JsonProcessingException{
+        MySQLConnect ConnectData = new MySQLConnect();
+        String sql = "select memberlist from groupchat where groupID = '" +groupID+"'";
+        ConnectData.st = ConnectData.conn.createStatement();
+        ConnectData.rs = ConnectData.st.executeQuery(sql);
+        GroupChatDTO memberlist = new GroupChatDTO();
+        while (ConnectData.rs.next()) {
+            ObjectMapper mapper = new ObjectMapper();
+            String arr = ConnectData.rs.getString(1);
+            int[] pp1 = mapper.readValue(arr, int[].class);
+            memberlist.setMemberlist(pp1);
+        }
+        ConnectData.MySQLDisconnect ();
+        return memberlist;
+    }
 }

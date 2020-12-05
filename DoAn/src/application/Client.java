@@ -48,11 +48,11 @@ class SendMessage implements Runnable {
             }
             break;
             case "chat": {
-                try {
-                    chatFriend();
-                } catch (IOException ex) {
-                    Logger.getLogger(SendMessage.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            try {             
+                Chat();
+            } catch (IOException ex) {
+                Logger.getLogger(SendMessage.class.getName()).log(Level.SEVERE, null, ex);
+            }
             }
             break;
             case "system": {
@@ -67,32 +67,19 @@ class SendMessage implements Runnable {
             }
             break;
         }
-
-//        try {
-//            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-//            String data = "";//Client.gui.txtContent.getText();
-//            String id = "";//Client.gui.pnlChatTo.getText();
-//            System.out.println("Client send:" + id + "#" +data + '\n');
-//            out.write(id + "#" +data + '\n');
-//            out.flush();
-//            
-//            //Client.gui.txtContent.setText("");
-//            //Client.gui.txtAChat.append(Client.name + ": " +data + '\n');
-//            if (data.equals("bye")) {
-//                System.out.println("Client closed connection");
-//                out.close();
-//                socket.close();
-//                Client.executor.shutdownNow();
-//            }
-//        } catch (IOException e) {
-//        }
     }
 
-    public void chatFriend() throws IOException {
+    public void Chat() throws IOException {
         String data = Client.gui.c_input.getText();
-        out.write(Client.chatTo + "#" + data + '\n');
+        if(data.equals("")){
+            return;
+        }
+        if(Client.chatMode.equals("oneToOne")){
+            out.write(Client.chatTo + "#" + data + '\n');
+        }else{
+            out.write("group#" +Client.chatTo + "#" + data + '\n');           
+        }
         out.flush();
-
         Client.gui.c_input.setText("");
         Client.gui.c_display.append(Client.name + ": " + data + '\n');
     }

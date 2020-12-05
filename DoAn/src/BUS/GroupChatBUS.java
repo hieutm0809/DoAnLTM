@@ -9,6 +9,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import DAO.GroupChatDAO;
 import DTO.GroupChatDTO;
 import static BUS.UserBUS.dsuser;
+import DTO.FriendListDTO;
+import MyConnection.MySQLConnect;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,5 +30,12 @@ public class GroupChatBUS {
             dsgroupchat = new ArrayList<GroupChatDTO>();
         }
         dsgroupchat = data.showGroupChat();
+    }
+    
+    public GroupChatDTO getMemberListByGroupID(int groupID) throws SQLException, JsonProcessingException{
+        GroupChatDTO memberlist = new GroupChatDTO();
+        GroupChatDAO memberlistDAO = new GroupChatDAO();
+        memberlist = memberlistDAO.getMemberListByGroupID(groupID);
+        return memberlist;
     }
 }

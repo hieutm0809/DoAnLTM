@@ -51,6 +51,26 @@ public class Worker implements Runnable {
         }
     }
 
+    public void sendToGroup(int groupID, String mess) throws SQLException, JsonProcessingException, IOException {
+        GroupChatBUS groupchatBUS = new GroupChatBUS();
+        GroupChatDTO groupchat = new GroupChatDTO();
+        groupchat = groupchatBUS.getMemberListByGroupID(groupID);
+        int[] arr = groupchat.getMemberlist();
+        for (int i = 0; i < arr.length; i++) {
+            if (this.myName == arr[i]) {
+                continue;
+            }
+            for (Worker worker : Server.workers) {
+                if (worker.myName == arr[i]) {
+                    worker.out.write(this.myName + "#" + mess + '\n');
+                    worker.out.flush();
+                    System.out.println("Server write: " + mess + " to " + worker.myName);
+                    break;
+                }
+            }
+        }
+    }
+
     public void sendToAll(String mess) throws IOException {
         for (Worker worker : Server.workers) {
             if (!(this.myName == worker.myName)) {
@@ -156,7 +176,7 @@ public class Worker implements Runnable {
         }
         systemCommand("showMessageFriend#" + messagefriend.getContent());
     }
-    
+
     public void showMessageGroup(int groupID) throws JsonProcessingException, IOException {
         MessageGroupBUS messagegroupBUS = new MessageGroupBUS();
         MessageGroupDTO messagegroup = new MessageGroupDTO();
@@ -167,7 +187,7 @@ public class Worker implements Runnable {
         }
         systemCommand("showMessageGroup#" + messagegroup.getContent());
     }
-    
+
     public void Process(String line) throws IOException, SQLException {
         if (!line.contains("#")) {
             this.out.write("Syntax error" + '\n');
@@ -176,8 +196,8 @@ public class Worker implements Runnable {
         } else {
             String[] parts = line.split("#");
             switch (parts[0]) {
-                case "all": {
-                    sendToAll(parts[1]);
+                case "group": {
+                    sendToGroup(Integer.parseInt(parts[1]), parts[2]);
                 }
                 break;
                 case "login": {
