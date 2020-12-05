@@ -3,6 +3,7 @@ package GUI;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Random;
 
 public class RegisterView extends JFrame implements ActionListener {
 
@@ -10,7 +11,6 @@ public class RegisterView extends JFrame implements ActionListener {
 //        RegisterView re = new RegisterView();
 //        re.displayGUI();
 //    }
-    
     // Components of the Form 
     private Container c;
     private JLabel title;
@@ -34,7 +34,8 @@ public class RegisterView extends JFrame implements ActionListener {
     private JTextArea tout;
     private JLabel res;
     private JTextArea resadd;
-
+    private JTextArea totp;
+    private JLabel otp;
     private String dates[]
             = {"1", "2", "3", "4", "5",
                 "6", "7", "8", "9", "10",
@@ -64,6 +65,17 @@ public class RegisterView extends JFrame implements ActionListener {
         setBounds(300, 90, 900, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
+    }
+
+    private static char[] generateOTP(int length) {
+        String numbers = "1234567890";
+        Random random = new Random();
+        char[] otp = new char[length];
+
+        for (int i = 0; i < length; i++) {
+            otp[i] = numbers.charAt(random.nextInt(numbers.length()));
+        }
+        return otp;
     }
 
     public void displayGUI() {
@@ -160,6 +172,9 @@ public class RegisterView extends JFrame implements ActionListener {
         temail.setLocation(200, 300);
         temail.setLineWrap(true);
         c.add(temail);
+        
+        
+        
 
         term = new JCheckBox("Accept Terms And Conditions.");
         term.setFont(new Font("Open Sans", Font.PLAIN, 15));

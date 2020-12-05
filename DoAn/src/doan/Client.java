@@ -8,30 +8,16 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import doan.Connection.DTO.infoUser;
 import GUI.GUI;
 import GUI.LoginView;
 import GUI.RegisterView;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import doan.Connection.DTO.contentMessageFriend;
 import doan.Connection.DTO.contentMessageGroup;
-import doan.Connection.DTO.infoGroup;
 import doan.Connection.UserBUS;
 import doan.Connection.UserDTO;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 class SendMessage implements Runnable {
 
@@ -140,6 +126,7 @@ class ReceiveMessage implements Runnable {
                                     Client.name = parts[3];
                                     Client.guiLogin.setVisible(false);
                                     Client.gui.displayGUI();
+                                    Client.gui.setDisableInput();
                                     Client.gui.setVisible(true);
                                 }
                                 break;
