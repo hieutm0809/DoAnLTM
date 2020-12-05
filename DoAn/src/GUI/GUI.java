@@ -68,10 +68,16 @@ public class GUI extends JFrame {
 
         c_display = new JTextArea();
         c_display.setEditable(false);
-        c_display.setBackground(incolor);
-        c_display.setBounds(0, 35, 500, 400);
         c_display.setFont(new Font("Open Sans", Font.PLAIN, 16));
-        
+
+        JPanel txtarea = new JPanel();
+        txtarea.setBounds(0, 35, 500, 400);
+        txtarea.setLayout(new BorderLayout(0, 0));
+
+        JScrollPane sb = new JScrollPane(c_display, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sb.setBorder(nullBorder);
+        txtarea.add(sb);
+
         c_input = new JTextArea();
         c_input.setBounds(0, 435, 400, 80);
         c_input.setBackground(incolor);
@@ -105,12 +111,12 @@ public class GUI extends JFrame {
         c_btn_sticker.setBorder(topBorder);
         c_btn_sticker.setFocusPainted(false);
         pn_center.add(c_label);
-        pn_center.add(c_display);
         pn_center.add(c_input);
         pn_center.add(c_btn_send);
         pn_center.add(c_btn_file);
         pn_center.add(c_btn_sticker);
-//        
+        pn_center.add(txtarea);
+        
         //Panel bên phải dùng dể hiện thị thông tin của người bạn đang chat/ thông tin nhóm
 
         pn_right = new JPanel();
