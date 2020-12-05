@@ -40,6 +40,11 @@ public class infoUser {
         this.fullname = fullname;
     }
 
+    @Override
+    public String toString() {
+        return fullname+"";
+    }
+
     public void setIsOnline(boolean isOnline) {
         this.isOnline = isOnline;
     }

@@ -32,6 +32,11 @@ public class infoGroup {
         this.groupID = groupID;
     }
 
+    @Override
+    public String toString() {
+        return groupname+"";
+    }
+
     public void setGroupname(String groupname) {
         this.groupname = groupname;
     }

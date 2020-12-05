@@ -12,6 +12,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.border.Border;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class GUI extends JFrame {
 
@@ -50,7 +52,6 @@ public class GUI extends JFrame {
         //******
         //***
         //Panel phía bên tay trái để hiện thị danh sách bạn bè 
-//        pn_left = new JPanel();
 //        pn_left.setLayout(null);
         pn_left = new JPanel();
         pn_left.setBackground(outcolor);
@@ -178,18 +179,19 @@ public class GUI extends JFrame {
         list.setBackground(new Color(250, 250, 250));
         list.setFixedCellHeight(50);
         list.setFixedCellWidth(230);
-
+        list.setSelectionBackground(outcolor);
+        list.setAutoscrolls(rootPaneCheckingEnabled);
         Color outline = new Color(230, 230, 230);
         Border leftBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, outline);
 
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) list.getCellRenderer();
         renderer.setHorizontalAlignment(JLabel.LEFT);
-
         list.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 JList list = (JList) evt.getSource();
                 infoUser s = (infoUser) list.getSelectedValue();
                 Client.gui.setC_Label(s.getFullname());
+               
             }
         });
         pn_left.add(list);
@@ -209,7 +211,8 @@ public class GUI extends JFrame {
         list.setBackground(new Color(250, 250, 250));
         list.setFixedCellHeight(50);
         list.setFixedCellWidth(230);
-
+        list.setSelectionBackground(outcolor);
+        list.setAutoscrolls(rootPaneCheckingEnabled);
         Color outline = new Color(230, 230, 230);
         Border leftBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, outline);
 
@@ -230,3 +233,4 @@ public class GUI extends JFrame {
 //        test.setVisible(true);
 //    }
 }
+
