@@ -1,8 +1,8 @@
 package GUI;
 
-import doan.Connection.UserBUS;
-import doan.Connection.UserDTO;
-import doan.Client;
+import BUS.UserBUS;
+import DTO.UserDTO;
+import application.Client;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

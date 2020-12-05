@@ -1,9 +1,9 @@
 package GUI;
 
 import com.google.gson.Gson;
-import doan.Client;
-import doan.Connection.DTO.infoGroup;
-import doan.Connection.DTO.infoUser;
+import application.Client;
+import DTO.infoGroup;
+import DTO.infoUser;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
