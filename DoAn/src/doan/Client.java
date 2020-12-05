@@ -14,11 +14,14 @@ import GUI.LoginView;
 import GUI.RegisterView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import doan.Connection.DTO.contentMessageFriend;
 import doan.Connection.DTO.infoGroup;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -56,8 +59,24 @@ class SendMessage implements Runnable {
             }
             break;
             case "chat": {
-           // mode
+                try {
+                    chatFriend();
+                } catch (IOException ex) {
+                    Logger.getLogger(SendMessage.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+            break;
+            case "system": {
+                try {
+                    out.write(Client.command + '\n');
+                    out.flush();
+                } catch (IOException ex) {
+                    Logger.getLogger(SendMessage.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                Client.status = "chat";
+                Client.command = "";
+            }
+            break;
         }
 
 //        try {
@@ -79,7 +98,15 @@ class SendMessage implements Runnable {
 //        } catch (IOException e) {
 //        }
     }
-    
+
+    public void chatFriend() throws IOException {
+        String data = Client.gui.c_input.getText();
+        out.write(Client.chatTo + "#" + data + '\n');
+        out.flush();
+
+        Client.gui.c_input.setText("");
+        Client.gui.c_display.append(Client.name + "#" + data + '\n');
+    }
 }
 
 class ReceiveMessage implements Runnable {
@@ -104,12 +131,13 @@ class ReceiveMessage implements Runnable {
                         case "login": {
                             switch (parts[2]) {
                                 case "success": {
-                                    Client.gui = new GUI(); 
+                                    Client.gui = new GUI();
                                     Client.status = "chat";
                                     Client.gui.name = parts[3];
+                                    Client.name = parts[3];
                                     Client.guiLogin.setVisible(false);
                                     Client.gui.displayGUI();
-                                    Client.gui.setVisible(true);                                    
+                                    Client.gui.setVisible(true);
                                 }
                                 break;
                                 default: {
@@ -119,16 +147,26 @@ class ReceiveMessage implements Runnable {
                         }
                         break;
                         case "friendlist": {
-                            if(parts.length == 3){
+                            if (parts.length == 3) {
                                 String arr = parts[2];
                                 Client.gui.FriendList(arr);
                             }
                         }
                         break;
                         case "groupchat": {
-                            if(parts.length == 3){
+                            if (parts.length == 3) {
                                 String arr = parts[2];
                                 Client.gui.GroupChat(arr);
+                            }
+                        }
+                        break;
+                        case "showMessage": {
+                            if(parts.length == 3) {
+                                String arr = parts[2];
+                                contentMessageFriend[] respone = new Gson().fromJson(arr, contentMessageFriend[].class);
+                                for (contentMessageFriend s : respone) {
+                                    Client.gui.c_display.append(s.getFrom() + " : " + s.getContent()+'\n');
+                                }
                             }
                         }
                         break;
@@ -137,11 +175,7 @@ class ReceiveMessage implements Runnable {
                 break;
 
                 default: {
-                    //Client user2: TheKhanh(nguoinhan)#noidungchat
-                    //======= Client TK: user2(nguoigui)#noidungchat
-//                    if(Client.gui != null)
-//                        Client.gui.txtAChat.append(parts[0]+ ": " +parts[1]+"\n");
-
+                    Client.gui.c_display.append(parts[0]+" : " +parts[1]);
                 }
             }
         }
@@ -153,7 +187,6 @@ class ReceiveMessage implements Runnable {
                 String data = in.readLine();
                 Process(data);
                 System.out.println("Receive: " + data);
-
             }
         } catch (IOException e) {
         }
@@ -170,17 +203,25 @@ public class Client {
     static LoginView guiLogin;
     static RegisterView guiRegister;
     static String status;
-    //static String name;
-
+    static String name;
+    public static int chatTo;
+    public static String chatMode;
+    public static String command;
     private static BufferedWriter out;
     private static BufferedReader in;
 
     private static SendMessage send;
     private static ReceiveMessage recv;
-    
+
     public static int id;
-    
+
     public static void executeSendMessage() {
+        executor.execute(send);
+    }
+
+    public static void systemSendMessage(String command) {
+        Client.command = command;
+        Client.status = "system";
         executor.execute(send);
     }
 

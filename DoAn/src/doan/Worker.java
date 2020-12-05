@@ -38,21 +38,14 @@ public class Worker implements Runnable {
     }
 
     public void sendToOne(int id, String mess) throws IOException {
-        boolean found = false;
         for (Worker worker : Server.workers) {
             if (worker.myName == id) {
                 worker.out.write(this.myName + "#" + mess + '\n');
                 worker.out.flush();
                 System.out.println("Server write: " + mess + " to " + worker.myName);
                 //save message to DB
-                found = true;
                 break;
             }
-        }
-        if (!found) {
-            this.out.write("id is not found!" + '\n');
-            this.out.flush();
-            System.out.println("Server write: id is not found! to " + this.myName);
         }
     }
 
@@ -89,11 +82,6 @@ public class Worker implements Runnable {
             this.myName = user.getId();
             showFriendList();
             showGroupChat();
-//            for (Worker worker : Server.workers) {
-//                if (!(this.myName == worker.myName)) {
-                    showMessageFriend(4,5);
-//                }
-//            }
         } else {
             systemCommand("login#Mật khẩu không đúng");
         }
@@ -105,9 +93,9 @@ public class Worker implements Runnable {
         UserDTO user = new UserDTO();
         FriendListBUS friendlistBUS = new FriendListBUS();
         FriendListDTO friendlist = friendlistBUS.findFriendListByID(this.myName);
-        
+
         int[] arr = friendlist.getUsername();
-        if(arr == null){
+        if (arr == null) {
             systemCommand("friendlist#");
             return;
         }
@@ -145,7 +133,7 @@ public class Worker implements Runnable {
                 }
             }
         }
-        if(dsgroup.size() == 0){
+        if (dsgroup.size() == 0) {
             systemCommand("groupchat#");
             return;
         }
@@ -155,14 +143,18 @@ public class Worker implements Runnable {
         System.out.println(JSONObject);
         systemCommand("groupchat#" + JSONObject);
     }
-    
+
     public void showMessageFriend(int participant1, int participant2) throws JsonProcessingException, IOException {
         MessageFriendBUS messagefriendBUS = new MessageFriendBUS();
         MessageFriendDTO messagefriend = new MessageFriendDTO();
         messagefriend = messagefriendBUS.showMessageFriend(participant1, participant2);
-        systemCommand("mess#" + messagefriend.getContent());
+        if (messagefriend.getContent() == null) {
+            systemCommand("showMessage#");
+            return;
+        }
+        systemCommand("showMessage#" + messagefriend.getContent());
     }
-    
+
     public void Process(String line) throws IOException, SQLException {
         if (!line.contains("#")) {
             this.out.write("Syntax error" + '\n');
@@ -179,7 +171,10 @@ public class Worker implements Runnable {
                     login(parts[1], parts[2]);
                 }
                 break;
-                //useradfabfasdfdas#hello cau
+                case "showMessage": {
+                    showMessageFriend(this.myName, Integer.parseInt(parts[1]));
+                }
+                break;
                 default: {
                     sendToOne(Integer.parseInt(parts[0]), parts[1]);
                 }

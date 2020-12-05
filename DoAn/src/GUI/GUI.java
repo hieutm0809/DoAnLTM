@@ -20,7 +20,7 @@ public class GUI extends JFrame {
     private JList<UserDTO> listUserDTO;
     JPanel pn_left, pn_right, pn_center, pn_top;
     JButton c_btn_send, c_btn_file, c_btn_sticker;
-    JTextArea c_input, c_display;
+    public static JTextArea c_input, c_display;
     JLabel c_label, t_avatar, t_name, user1, user2, user3, r_name, r_email;
     Font font = new Font("Open Sans", Font.PLAIN, 20);
     Color outcolor = new Color(250, 250, 250);
@@ -87,6 +87,12 @@ public class GUI extends JFrame {
         c_btn_send.setBackground(outcolor);
         c_btn_send.setBorder(topBorder);
         c_btn_send.setFocusPainted(false);
+        c_btn_send.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Client.executeSendMessage();
+            }
+        });
 
         c_btn_file = new JButton();
         c_btn_file.setIcon(new ImageIcon(getClass().getResource("/Image/file.png")));
@@ -191,7 +197,10 @@ public class GUI extends JFrame {
                 JList list = (JList) evt.getSource();
                 infoUser s = (infoUser) list.getSelectedValue();
                 Client.gui.setC_Label(s.getFullname());
-               
+                Client.chatTo = s.getId();
+                Client.chatMode = "oneToOne";
+                GUI.c_display.setText("");
+                Client.systemSendMessage("showMessage#"+ s.getId());
             }
         });
         pn_left.add(list);
@@ -199,12 +208,12 @@ public class GUI extends JFrame {
 
     public void GroupChat(String arr) {
         infoGroup[] respone = new Gson().fromJson(arr, infoGroup[].class);
-        DefaultListModel model = new DefaultListModel();
+        DefaultListModel<infoGroup> model = new DefaultListModel();
 
         for (infoGroup s : respone) {
             System.out.println("Id: " + s.getGroupID());
             System.out.println("Name: " + s.getGroupname());
-            model.addElement(s.getGroupname());
+            model.addElement(s);
         }
         JList list = new JList(model);
         list.setFont(new Font("Open Sans", Font.BOLD, 14));
@@ -221,7 +230,11 @@ public class GUI extends JFrame {
 
         list.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
-
+                JList list = (JList) evt.getSource();
+                infoGroup s = (infoGroup) list.getSelectedValue();
+                Client.gui.setC_Label(s.getGroupname());
+                Client.chatTo = s.getGroupID();
+                Client.chatMode = "group";
             }
         });
         pn_left.add(list);
