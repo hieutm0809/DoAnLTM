@@ -5,6 +5,8 @@
  */
 package DTO;
 
+import java.util.Arrays;
+
 /**
  *
  * @author ADMIN
@@ -32,7 +34,7 @@ public class MessageFriendDTO {
     public String getContent() {
         return content;
     }
-
+    
     public void setParticipant1(int participant1) {
         this.participant1 = participant1;
     }

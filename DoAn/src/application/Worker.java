@@ -25,6 +25,11 @@ import BUS.MessageFriendBUS;
 import DTO.MessageFriendDTO;
 import BUS.MessageGroupBUS;
 import DTO.MessageGroupDTO;
+import DTO.contentMessageFriend;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 
 public class Worker implements Runnable {
 
@@ -39,14 +44,23 @@ public class Worker implements Runnable {
         this.out = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
     }
 
-    public void sendToOne(int id, String mess) throws IOException {
+    public void sendToOne(int id, String mess) throws IOException, SQLException {
         for (Worker worker : Server.workers) {
             if (worker.myName == id) {
                 worker.out.write(this.myName + "#" + mess + '\n');
                 worker.out.flush();
                 System.out.println("Server write: " + mess + " to " + worker.myName);
-                //save message to DB
-                break;
+                MessageFriendBUS messagefriendBUS = new MessageFriendBUS();
+                MessageFriendDTO messagefriend = new MessageFriendDTO();
+                messagefriend = messagefriendBUS.getMessageByParticipantsID(this.myName, worker.myName);
+                if(messagefriend.getParticipant1() == 0 ){
+                    insertMessageFriend(this.myName,worker.myName,mess);
+                    break;
+                }else{
+                    updateMessageFriend(this.myName,worker.myName,mess);
+                    break;
+                }
+                
             }
         }
     }
@@ -70,15 +84,40 @@ public class Worker implements Runnable {
             }
         }
     }
-
-    public void sendToAll(String mess) throws IOException {
-        for (Worker worker : Server.workers) {
-            if (!(this.myName == worker.myName)) {
-                worker.out.write(this.myName + " to all: " + mess + '\n');
-                worker.out.flush();
-                System.out.println("Server write: " + mess + " to " + worker.myName);
-            }
+    
+    public void updateMessageFriend(int participant1,int participant2,String mess) throws SQLException, JsonProcessingException{
+        ArrayList arrMess = new ArrayList<contentMessageFriend>();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        MessageFriendBUS messagefriendBUS = new MessageFriendBUS();
+        MessageFriendDTO messagefriend = new MessageFriendDTO();
+        messagefriend = messagefriendBUS.getMessageByParticipantsID(participant1, participant2);
+        contentMessageFriend[] respone = new Gson().fromJson(messagefriend.getContent(), contentMessageFriend[].class);
+        for (contentMessageFriend s : respone) {
+            contentMessageFriend contentLoad = new contentMessageFriend(s.getFrom(), s.getTime(), s.getContent());
+            arrMess.add(contentLoad);
         }
+        contentMessageFriend content = new contentMessageFriend(participant1, dateFormat.format(date), mess);
+        arrMess.add(content);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String JSONObject = gson.toJson(arrMess).replace("\"", "\\\"");
+        MessageFriendDTO update = new MessageFriendDTO(participant1, participant2, JSONObject);
+        messagefriendBUS.updateMessageFriend(update);
+    }
+    
+    public void insertMessageFriend(int participant1,int participant2,String mess) throws SQLException{
+        ArrayList arrMess = new ArrayList<contentMessageFriend>();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        contentMessageFriend content = new contentMessageFriend(participant1, dateFormat.format(date), mess);
+        arrMess.add(content);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String JSONObject = gson.toJson(arrMess).replace("\"", "\\\"");
+        MessageFriendBUS messagefriendBUS = new MessageFriendBUS();
+        MessageFriendDTO insert = new MessageFriendDTO(participant1, participant2, JSONObject);
+        messagefriendBUS.addMessageFriend(insert);
     }
 
     public void systemCommand(String mess) throws IOException {
@@ -169,7 +208,7 @@ public class Worker implements Runnable {
     public void showMessageFriend(int participant1, int participant2) throws JsonProcessingException, IOException {
         MessageFriendBUS messagefriendBUS = new MessageFriendBUS();
         MessageFriendDTO messagefriend = new MessageFriendDTO();
-        messagefriend = messagefriendBUS.showMessageFriend(participant1, participant2);
+        messagefriend = messagefriendBUS.getMessageByParticipantsID(participant1, participant2);
         if (messagefriend.getContent() == null) {
             systemCommand("showMessageFriend#");
             return;
@@ -224,7 +263,6 @@ public class Worker implements Runnable {
         try {
             String input = "";
             //setName();
-            sendToAll("user " + this.myName + " log in to server");
             //friendList();
             while (true) {
                 input = in.readLine();
@@ -235,7 +273,6 @@ public class Worker implements Runnable {
                 Process(input);
             }
             System.out.println("Closed socket for client " + myName + " " + socket.toString());
-            sendToAll("user " + this.myName + " log out from server");
             in.close();
             out.close();
             socket.close();

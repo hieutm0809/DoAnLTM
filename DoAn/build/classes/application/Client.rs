@@ -1,3 +1,0 @@
-application.ReceiveMessage
-application.SendMessage
-application.Client

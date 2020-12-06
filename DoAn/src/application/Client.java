@@ -200,8 +200,8 @@ public class Client {
     static ExecutorService executor;
     public static GUI gui;
     static LoginView guiLogin;
-    static RegisterView guiRegister;
-    static String status;
+    public static RegisterView guiRegister;
+    public static String status;
     static String name;
     public static int chatTo;
     public static String chatMode;

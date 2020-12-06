@@ -187,6 +187,7 @@ public class RegisterView extends JFrame implements ActionListener {
         sub.setSize(100, 20);
         sub.setLocation(150, 450);
         sub.addActionListener(this);
+        
         c.add(sub);
 
         reset = new JButton("Reset");

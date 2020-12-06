@@ -94,8 +94,9 @@ public class LoginView extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                RegisterView re = new RegisterView();
-                re.displayGUI();
+                Client.status = "register";
+                Client.guiRegister = new RegisterView();
+                Client.guiRegister.displayGUI();
             }
         });
         panel.add(registerButton);

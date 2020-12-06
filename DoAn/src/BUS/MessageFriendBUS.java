@@ -7,18 +7,27 @@ package BUS;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import DAO.MessageFriendDAO;
-import DAO.MessageFriendDAO;
 import DTO.MessageFriendDTO;
-import DTO.MessageFriendDTO;
+import java.sql.SQLException;
 /**
  *
  * @author ADMIN
  */
 public class MessageFriendBUS {
-    public MessageFriendDTO showMessageFriend(int participant1,int participant2) throws JsonProcessingException{
+    public MessageFriendDTO getMessageByParticipantsID(int participant1,int participant2) throws JsonProcessingException{
         MessageFriendDTO messagefriend = new MessageFriendDTO();
         MessageFriendDAO messagefriendDAO = new MessageFriendDAO();
         messagefriend = messagefriendDAO.getMessageByParticipantsID(participant1, participant2);
         return messagefriend;
+    }
+    
+    public void updateMessageFriend(MessageFriendDTO data) throws SQLException{
+        MessageFriendDAO updatemessageDAO = new MessageFriendDAO();
+        updatemessageDAO.updateMessageFriend(data);
+    }
+    
+    public void addMessageFriend(MessageFriendDTO data) throws SQLException{
+        MessageFriendDAO insertmessageDAO = new MessageFriendDAO();
+        insertmessageDAO.addMessageFriend(data);
     }
 }
