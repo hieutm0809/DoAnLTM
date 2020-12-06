@@ -8,6 +8,7 @@ package BUS;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import DAO.MessageGroupDAO;
 import DTO.MessageGroupDTO;
+import java.sql.SQLException;
 
 /**
  *
@@ -19,5 +20,14 @@ public class MessageGroupBUS {
         MessageGroupDAO messagegroupDAO = new MessageGroupDAO();
         messagegroup = messagegroupDAO.getMessageByGroupID(groupID);
         return messagegroup;
+    }
+    public void updateMessageGroup(MessageGroupDTO data) throws SQLException{
+        MessageGroupDAO updatemessageDAO = new MessageGroupDAO();
+        updatemessageDAO.updateMessageGroup(data);
+    }
+    
+    public void addMessageGroup(MessageGroupDTO data) throws SQLException{
+        MessageGroupDAO insertmessageDAO = new MessageGroupDAO();
+        insertmessageDAO.addMessageGroup(data);
     }
 }

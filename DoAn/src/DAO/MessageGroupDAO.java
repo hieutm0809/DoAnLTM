@@ -31,4 +31,22 @@ public class MessageGroupDAO {
         ConnectData.MySQLDisconnect();
         return messagegroup;
     }
+    
+    public void updateMessageGroup(MessageGroupDTO data) throws SQLException{
+        MySQLConnect ConnectData = new MySQLConnect();
+        String sql = "update messagegroup set content = '" +data.getContent()+ "' where groupID = '"+data.getGroupID()+"'";
+        ConnectData.st = ConnectData.conn.createStatement();
+        ConnectData.st.executeUpdate(sql);
+        
+        ConnectData.MySQLDisconnect();
+    }
+    
+    public void addMessageGroup(MessageGroupDTO data) throws SQLException{
+        MySQLConnect ConnectData = new MySQLConnect();
+        String sql = "insert into messagegroup (groupID,content) values ('" + data.getGroupID()+ "' , '" +data.getContent()+"')";
+        ConnectData.st = ConnectData.conn.createStatement();
+        ConnectData.st.executeUpdate(sql);
+        
+        ConnectData.MySQLDisconnect();
+    }
 }

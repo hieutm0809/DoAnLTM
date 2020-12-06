@@ -12,8 +12,7 @@ import GUI.GUI;
 import GUI.LoginView;
 import GUI.RegisterView;
 import com.google.gson.Gson;
-import DTO.contentMessageFriend;
-import DTO.contentMessageGroup;
+import DTO.contentMessage;
 import BUS.UserBUS;
 import DTO.UserDTO;
 import java.util.logging.Level;
@@ -140,8 +139,8 @@ class ReceiveMessage implements Runnable {
                         case "showMessageFriend": {
                             if(parts.length == 3) {
                                 String arr = parts[2];
-                                contentMessageFriend[] respone = new Gson().fromJson(arr, contentMessageFriend[].class);
-                                for (contentMessageFriend s : respone) {
+                                contentMessage[] respone = new Gson().fromJson(arr, contentMessage[].class);
+                                for (contentMessage s : respone) {
                                     UserBUS bususer = new UserBUS();
                                     bususer.docDSuser();
                                     UserDTO user = new UserDTO();
@@ -154,8 +153,8 @@ class ReceiveMessage implements Runnable {
                         case "showMessageGroup": {
                             if(parts.length == 3) {
                                 String arr = parts[2];
-                                contentMessageGroup[] respone = new Gson().fromJson(arr, contentMessageGroup[].class);
-                                for (contentMessageGroup s : respone) {
+                                contentMessage[] respone = new Gson().fromJson(arr, contentMessage[].class);
+                                for (contentMessage s : respone) {
                                     UserBUS bususer = new UserBUS();
                                     bususer.docDSuser();
                                     UserDTO user = new UserDTO();

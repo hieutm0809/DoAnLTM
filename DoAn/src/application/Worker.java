@@ -25,7 +25,7 @@ import BUS.MessageFriendBUS;
 import DTO.MessageFriendDTO;
 import BUS.MessageGroupBUS;
 import DTO.MessageGroupDTO;
-import DTO.contentMessageFriend;
+import DTO.contentMessage;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -79,25 +79,34 @@ public class Worker implements Runnable {
                     worker.out.write(this.myName + "#" + mess + '\n');
                     worker.out.flush();
                     System.out.println("Server write: " + mess + " to " + worker.myName);
-                    break;
+                    MessageGroupBUS messagegroupBUS = new MessageGroupBUS();
+                    MessageGroupDTO messagegroup = new MessageGroupDTO();
+                    messagegroup = messagegroupBUS.showMessageGroup(groupID);
+                    if(messagegroup.getGroupID() == 0){
+                        insertMessageGroup(groupID,this.myName,mess);
+                        break;
+                    }else{
+                        updateMessageGroup(groupID,this.myName,mess);
+                        break;
+                    }
                 }
             }
         }
     }
     
     public void updateMessageFriend(int participant1,int participant2,String mess) throws SQLException, JsonProcessingException{
-        ArrayList arrMess = new ArrayList<contentMessageFriend>();
+        ArrayList arrMess = new ArrayList<contentMessage>();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
         MessageFriendBUS messagefriendBUS = new MessageFriendBUS();
         MessageFriendDTO messagefriend = new MessageFriendDTO();
         messagefriend = messagefriendBUS.getMessageByParticipantsID(participant1, participant2);
-        contentMessageFriend[] respone = new Gson().fromJson(messagefriend.getContent(), contentMessageFriend[].class);
-        for (contentMessageFriend s : respone) {
-            contentMessageFriend contentLoad = new contentMessageFriend(s.getFrom(), s.getTime(), s.getContent());
+        contentMessage[] respone = new Gson().fromJson(messagefriend.getContent(), contentMessage[].class);
+        for (contentMessage s : respone) {
+            contentMessage contentLoad = new contentMessage(s.getFrom(), s.getTime(), s.getContent());
             arrMess.add(contentLoad);
         }
-        contentMessageFriend content = new contentMessageFriend(participant1, dateFormat.format(date), mess);
+        contentMessage content = new contentMessage(participant1, dateFormat.format(date), mess);
         arrMess.add(content);
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -107,10 +116,10 @@ public class Worker implements Runnable {
     }
     
     public void insertMessageFriend(int participant1,int participant2,String mess) throws SQLException{
-        ArrayList arrMess = new ArrayList<contentMessageFriend>();
+        ArrayList arrMess = new ArrayList<contentMessage>();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
-        contentMessageFriend content = new contentMessageFriend(participant1, dateFormat.format(date), mess);
+        contentMessage content = new contentMessage(participant1, dateFormat.format(date), mess);
         arrMess.add(content);
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -119,7 +128,42 @@ public class Worker implements Runnable {
         MessageFriendDTO insert = new MessageFriendDTO(participant1, participant2, JSONObject);
         messagefriendBUS.addMessageFriend(insert);
     }
-
+    
+    public void updateMessageGroup(int groupID,int sender,String mess) throws SQLException, JsonProcessingException{
+        ArrayList arrMess = new ArrayList<contentMessage>();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        MessageGroupBUS messagegroupBUS = new MessageGroupBUS();
+        MessageGroupDTO messagegroup = new MessageGroupDTO();
+        messagegroup = messagegroupBUS.showMessageGroup(groupID);
+        contentMessage[] respone = new Gson().fromJson(messagegroup.getContent(), contentMessage[].class);
+        for (contentMessage s : respone) {
+            contentMessage contentLoad = new contentMessage(s.getFrom(), s.getTime(), s.getContent());
+            arrMess.add(contentLoad);
+        }
+        contentMessage content = new contentMessage(sender, dateFormat.format(date), mess);
+        arrMess.add(content);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String JSONObject = gson.toJson(arrMess).replace("\"", "\\\"");
+        MessageGroupDTO update = new MessageGroupDTO(groupID, JSONObject);
+        messagegroupBUS.updateMessageGroup(update);
+    }
+    
+    public void insertMessageGroup(int groupID,int sender,String mess) throws SQLException{
+        ArrayList arrMess = new ArrayList<contentMessage>();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        contentMessage content = new contentMessage(sender, dateFormat.format(date), mess);
+        arrMess.add(content);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String JSONObject = gson.toJson(arrMess).replace("\"", "\\\"");
+        MessageGroupBUS messagegroupBUS = new MessageGroupBUS();
+        MessageGroupDTO insert = new MessageGroupDTO(groupID, JSONObject);
+        messagegroupBUS.addMessageGroup(insert);
+    }
+    
     public void systemCommand(String mess) throws IOException {
         this.out.write("system#" + mess + "\n");
         this.out.flush();

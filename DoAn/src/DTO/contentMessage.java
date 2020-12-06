@@ -9,14 +9,14 @@ package DTO;
  *
  * @author ADMIN
  */
-public class contentMessageGroup {
+public class contentMessage {
     private int from;
     private String time;
     private String content;
-    public contentMessageGroup(){
+    public contentMessage(){
         
     }
-    public contentMessageGroup(int from, String time, String content){
+    public contentMessage(int from, String time, String content){
         this.from = from;
         this.time = time;
         this.content = content;
@@ -45,4 +45,5 @@ public class contentMessageGroup {
     public void setContent(String content) {
         this.content = content;
     }
+    
 }
