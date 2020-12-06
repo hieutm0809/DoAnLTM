@@ -53,14 +53,14 @@ public class Worker implements Runnable {
                 MessageFriendBUS messagefriendBUS = new MessageFriendBUS();
                 MessageFriendDTO messagefriend = new MessageFriendDTO();
                 messagefriend = messagefriendBUS.getMessageByParticipantsID(this.myName, worker.myName);
-                if(messagefriend.getParticipant1() == 0 ){
-                    insertMessageFriend(this.myName,worker.myName,mess);
+                if (messagefriend.getParticipant1() == 0) {
+                    insertMessageFriend(this.myName, worker.myName, mess);
                     break;
-                }else{
-                    updateMessageFriend(this.myName,worker.myName,mess);
+                } else {
+                    updateMessageFriend(this.myName, worker.myName, mess);
                     break;
                 }
-                
+
             }
         }
     }
@@ -82,19 +82,19 @@ public class Worker implements Runnable {
                     MessageGroupBUS messagegroupBUS = new MessageGroupBUS();
                     MessageGroupDTO messagegroup = new MessageGroupDTO();
                     messagegroup = messagegroupBUS.showMessageGroup(groupID);
-                    if(messagegroup.getGroupID() == 0){
-                        insertMessageGroup(groupID,this.myName,mess);
+                    if (messagegroup.getGroupID() == 0) {
+                        insertMessageGroup(groupID, this.myName, mess);
                         break;
-                    }else{
-                        updateMessageGroup(groupID,this.myName,mess);
+                    } else {
+                        updateMessageGroup(groupID, this.myName, mess);
                         break;
                     }
                 }
             }
         }
     }
-    
-    public void updateMessageFriend(int participant1,int participant2,String mess) throws SQLException, JsonProcessingException{
+
+    public void updateMessageFriend(int participant1, int participant2, String mess) throws SQLException, JsonProcessingException {
         ArrayList arrMess = new ArrayList<contentMessage>();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
@@ -114,8 +114,8 @@ public class Worker implements Runnable {
         MessageFriendDTO update = new MessageFriendDTO(participant1, participant2, JSONObject);
         messagefriendBUS.updateMessageFriend(update);
     }
-    
-    public void insertMessageFriend(int participant1,int participant2,String mess) throws SQLException{
+
+    public void insertMessageFriend(int participant1, int participant2, String mess) throws SQLException {
         ArrayList arrMess = new ArrayList<contentMessage>();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
@@ -128,8 +128,8 @@ public class Worker implements Runnable {
         MessageFriendDTO insert = new MessageFriendDTO(participant1, participant2, JSONObject);
         messagefriendBUS.addMessageFriend(insert);
     }
-    
-    public void updateMessageGroup(int groupID,int sender,String mess) throws SQLException, JsonProcessingException{
+
+    public void updateMessageGroup(int groupID, int sender, String mess) throws SQLException, JsonProcessingException {
         ArrayList arrMess = new ArrayList<contentMessage>();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
@@ -149,8 +149,8 @@ public class Worker implements Runnable {
         MessageGroupDTO update = new MessageGroupDTO(groupID, JSONObject);
         messagegroupBUS.updateMessageGroup(update);
     }
-    
-    public void insertMessageGroup(int groupID,int sender,String mess) throws SQLException{
+
+    public void insertMessageGroup(int groupID, int sender, String mess) throws SQLException {
         ArrayList arrMess = new ArrayList<contentMessage>();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
@@ -163,7 +163,7 @@ public class Worker implements Runnable {
         MessageGroupDTO insert = new MessageGroupDTO(groupID, JSONObject);
         messagegroupBUS.addMessageGroup(insert);
     }
-    
+
     public void systemCommand(String mess) throws IOException {
         this.out.write("system#" + mess + "\n");
         this.out.flush();

@@ -65,22 +65,6 @@ public class LoginView extends JFrame {
                 JOptionPane.showMessageDialog(null, "Không được để trống thông tin đăng nhập");
             } else {
                 Client.executeSendMessage();
-                
-                
-//                UserBUS bususer = new UserBUS();
-//                bususer.docDSuser();
-//                UserDTO user = new UserDTO();
-//                user = bususer.Tim(userText.getText());
-//                if (user == null) {
-//                    JOptionPane.showMessageDialog(null, "Tên tài khoản không tồn tại");
-//                } else if (userText.getText().equals(user.getId()) && passtext.equals(user.getPass())) {
-//                    GUI gui = new GUI();
-//                    gui.displayGUI();
-//                    gui.setVisible(true);
-//                    setVisible(false);
-//                } else {
-//                    JOptionPane.showMessageDialog(null, "Mật khẩu không chính xác");
-//                }
             }
 
         });

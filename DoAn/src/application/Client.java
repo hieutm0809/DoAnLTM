@@ -47,11 +47,11 @@ class SendMessage implements Runnable {
             }
             break;
             case "chat": {
-            try {             
-                Chat();
-            } catch (IOException ex) {
-                Logger.getLogger(SendMessage.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                try {
+                    Chat();
+                } catch (IOException ex) {
+                    Logger.getLogger(SendMessage.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             break;
             case "system": {
@@ -70,13 +70,13 @@ class SendMessage implements Runnable {
 
     public void Chat() throws IOException {
         String data = Client.gui.c_input.getText();
-        if(data.equals("")){
+        if (data.equals("")) {
             return;
         }
-        if(Client.chatMode.equals("oneToOne")){
+        if (Client.chatMode.equals("oneToOne")) {
             out.write(Client.chatTo + "#" + data + '\n');
-        }else{
-            out.write("group#" +Client.chatTo + "#" + data + '\n');           
+        } else {
+            out.write("group#" + Client.chatTo + "#" + data + '\n');
         }
         out.flush();
         Client.gui.c_input.setText("");
@@ -137,7 +137,7 @@ class ReceiveMessage implements Runnable {
                         }
                         break;
                         case "showMessageFriend": {
-                            if(parts.length == 3) {
+                            if (parts.length == 3) {
                                 String arr = parts[2];
                                 contentMessage[] respone = new Gson().fromJson(arr, contentMessage[].class);
                                 for (contentMessage s : respone) {
@@ -145,13 +145,13 @@ class ReceiveMessage implements Runnable {
                                     bususer.docDSuser();
                                     UserDTO user = new UserDTO();
                                     user = bususer.takeInfoUserByID(s.getFrom());
-                                    Client.gui.c_display.append(user.getFullname() + ": " + s.getContent()+'\n');
+                                    Client.gui.c_display.append(user.getFullname() + ": " + s.getContent() + '\n');
                                 }
                             }
                         }
                         break;
                         case "showMessageGroup": {
-                            if(parts.length == 3) {
+                            if (parts.length == 3) {
                                 String arr = parts[2];
                                 contentMessage[] respone = new Gson().fromJson(arr, contentMessage[].class);
                                 for (contentMessage s : respone) {
@@ -159,7 +159,7 @@ class ReceiveMessage implements Runnable {
                                     bususer.docDSuser();
                                     UserDTO user = new UserDTO();
                                     user = bususer.takeInfoUserByID(s.getFrom());
-                                    Client.gui.c_display.append(user.getFullname() + ": " + s.getContent()+'\n');
+                                    Client.gui.c_display.append(user.getFullname() + ": " + s.getContent() + '\n');
                                 }
                             }
                         }
@@ -173,7 +173,7 @@ class ReceiveMessage implements Runnable {
                     bususer.docDSuser();
                     UserDTO user = new UserDTO();
                     user = bususer.takeInfoUserByID(Integer.parseInt(parts[0]));
-                    Client.gui.c_display.append(user.getFullname() + ": " +parts[1] +'\n');
+                    Client.gui.c_display.append(user.getFullname() + ": " + parts[1] + '\n');
                 }
             }
         }
