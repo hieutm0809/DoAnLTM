@@ -302,9 +302,9 @@ public class GUI extends JFrame {
         pn_left.add(list);
 
     }
-//    public static void main(String[] args) {
-//        GUI test = new GUI();
-//        test.displayGUI();
-//        test.setVisible(true);
-//    }
+    public static void main(String[] args) {
+        GUI test = new GUI();
+        test.displayGUI();
+        test.setVisible(true);
+    }
 }

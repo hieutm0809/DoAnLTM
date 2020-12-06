@@ -24,12 +24,13 @@ import DTO.GroupChatDTO;
 import BUS.MessageFriendBUS;
 import DTO.MessageFriendDTO;
 import BUS.MessageGroupBUS;
+import BUS.statisticalUser;
 import DTO.MessageGroupDTO;
 import DTO.contentMessage;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.Scanner;
 
 public class Worker implements Runnable {
 
@@ -311,16 +312,20 @@ public class Worker implements Runnable {
             while (true) {
                 input = in.readLine();
                 System.out.println("Server received: " + input + " from " + socket.toString() + " # Client " + myName);
-                if (input.equals("bye")) {
-                    break;
-                }
                 Process(input);
+                Scanner sc = new Scanner(System.in);
+                String com = sc.nextLine(); // sumUser
+                if(com.equals("sumUser")) {
+                        System.out.println("Tổng số User đang online: " + Server.sum);
+                        statisticalUser statistical = new statisticalUser();
+                        statistical.statisticalUser();
+                        break;
+                }
             }
-            System.out.println("Closed socket for client " + myName + " " + socket.toString());
-            in.close();
-            out.close();
-            socket.close();
-            Server.workers.remove(this);
+//            in.close();
+//            out.close();
+//            socket.close();
+//            Server.workers.remove(this);
         } catch (IOException e) {
             System.out.println(e);
         } catch (SQLException ex) {
