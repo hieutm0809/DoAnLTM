@@ -15,6 +15,8 @@ import com.google.gson.Gson;
 import DTO.contentMessage;
 import BUS.UserBUS;
 import DTO.UserDTO;
+import GUI.InputView;
+import static GUI.InputView.inputText;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +32,6 @@ class SendMessage implements Runnable {
 
     public void Login() {
         try {
-            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
             String id = Client.guiLogin.userText.getText();
             String pass = new String(Client.guiLogin.passwordText.getPassword());
             System.out.println("Client send: login#" + id + "#" + pass + '\n');
@@ -39,7 +40,7 @@ class SendMessage implements Runnable {
         } catch (IOException e) {
         }
     }
-
+           
     public void run() {
         switch (Client.status) {
             case "login": {
@@ -54,12 +55,13 @@ class SendMessage implements Runnable {
                 }
             }
             break;
-            case "system": {
+            case "system": { 
                 try {
                     out.write(Client.command + '\n');
                     out.flush();
                 } catch (IOException ex) {
                     Logger.getLogger(SendMessage.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println(ex.toString());
                 }
                 Client.status = "chat";
                 Client.command = "";
@@ -122,6 +124,14 @@ class ReceiveMessage implements Runnable {
                             }
                         }
                         break;
+                        case "addfriend": {
+                            Client.input.setVisible(false);  
+                            System.out.println(parts[2]);
+                        }
+                        break;
+                        default: {
+                                    Client.input.alert(parts[2]);
+                                }
                         case "friendlist": {
                             if (parts.length == 3) {
                                 String arr = parts[2];
@@ -200,6 +210,7 @@ public class Client {
     public static GUI gui;
     static LoginView guiLogin;
     public static RegisterView guiRegister;
+    public static InputView input;
     public static String status;
     static String name;
     public static int chatTo;
@@ -222,7 +233,6 @@ public class Client {
         Client.status = "system";
         executor.execute(send);
     }
-
     public static void main(String[] args) throws IOException, InterruptedException {
         socket = new Socket(host, port);
         System.out.println("Client connected");

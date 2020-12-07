@@ -162,6 +162,13 @@ public class GUI extends JFrame {
         t_btn_addfr.setFocusPainted(false);
         t_btn_addfr.setBorder(nullBorder);
         t_btn_addfr.setBackground(outcolor);
+        t_btn_addfr.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Client.input = new InputView();
+                Client.input.displayGUI();
+                Client.input.setVisible(true);
+            }
+        });
 
         t_creategr = new JLabel("Create Group");
         t_creategr.setBounds(820, 25, 120, 50);
@@ -221,9 +228,9 @@ public class GUI extends JFrame {
         DefaultListModel<infoUser> model = new DefaultListModel();
 
         for (infoUser s : respone) {
-            System.out.println("Id: " + s.getId());
-            System.out.println("Name: " + s.getFullname());
-            System.out.println("Status: " + s.isOnline());
+//            System.out.println("Id: " + s.getId());
+//            System.out.println("Name: " + s.getFullname());
+//            System.out.println("Status: " + s.isOnline());
             model.addElement(s);
         }
         JList list = new JList(model);
@@ -264,8 +271,8 @@ public class GUI extends JFrame {
         DefaultListModel<infoGroup> model = new DefaultListModel();
 
         for (infoGroup s : respone) {
-            System.out.println("Id: " + s.getGroupID());
-            System.out.println("Name: " + s.getGroupname());
+//            System.out.println("Id: " + s.getGroupID());
+//            System.out.println("Name: " + s.getGroupname());
             model.addElement(s);
         }
         JList list = new JList(model);
@@ -302,9 +309,9 @@ public class GUI extends JFrame {
         pn_left.add(list);
 
     }
-    public static void main(String[] args) {
-        GUI test = new GUI();
-        test.displayGUI();
-        test.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        GUI test = new GUI();
+//        test.displayGUI();
+//        test.setVisible(true);
+//    }
 }

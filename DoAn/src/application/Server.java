@@ -20,8 +20,7 @@ public class Server {
         try {
             server = new ServerSocket(port);
             System.out.println("Server binding at port " + port);
-            System.out.println("Waiting for client...");
-            
+            System.out.println("Waiting for client...");   
             while (true) {
                 Socket socket = server.accept();
                 Worker client = new Worker(socket);

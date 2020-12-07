@@ -25,12 +25,17 @@ import BUS.MessageFriendBUS;
 import DTO.MessageFriendDTO;
 import BUS.MessageGroupBUS;
 import BUS.statisticalUser;
+import DAO.FriendListDAO;
 import DTO.MessageGroupDTO;
 import DTO.contentMessage;
+import java.awt.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Worker implements Runnable {
 
@@ -193,13 +198,67 @@ public class Worker implements Runnable {
         }
 
     }
-
+    
+    public void addFriend(String username) throws IOException, SQLException{
+        UserBUS bususer = new UserBUS();
+        bususer.docDSuser();
+        FriendListBUS friendlistBUS = new FriendListBUS();
+        FriendListDTO friendlist = new FriendListDTO();
+        friendlist = friendlistBUS.findFriendListByID(this.myName);
+        UserDTO user = new UserDTO();
+        user = bususer.Tim(username);
+        if(user == null){
+            systemCommand("addfriend#Tài khoản không tồn tại");
+            return;
+        }
+        if(user.getId() == this.myName){
+            return;
+        }
+        if(friendlist.getUserID() == 0 ) {
+            insertFriendList(this.myName,user.getId());
+        }else{                             
+            systemCommand("addfriend#" + user.getFullname());
+            updateFriendList(this.myName,user.getId());
+        }
+        friendlist = friendlistBUS.findFriendListByID(user.getId());
+        if(friendlist.getUserID() == 0 ) {
+            insertFriendList(user.getId(),this.myName);
+        }else{                             
+            updateFriendList(user.getId(),this.myName);
+        }
+    }
+    
+    public void updateFriendList(int isAddID , int isAddedID) throws SQLException, JsonProcessingException{
+        FriendListBUS friendlistBUS = new FriendListBUS();
+        FriendListDTO friendlist = new FriendListDTO();
+        friendlist = friendlistBUS.findFriendListByID(myName);
+        int[] arr = friendlist.getUsername();
+        int [] newarr = new int[arr.length + 1]; 
+        for(int i = 0; i< arr.length; i++){
+            if(arr[i] == isAddedID){
+                return;
+            }else{
+                newarr[i] = arr[i];
+            }
+        }
+        newarr[arr.length] = isAddedID;
+        FriendListDTO updatefriendlist = new FriendListDTO(isAddID,newarr);
+        friendlistBUS.updateFriendList(updatefriendlist);
+    }
+    
+    public void insertFriendList(int isAddID , int isAddedID) throws SQLException{
+        FriendListBUS friendlistBUS = new FriendListBUS();
+        int[] arr = new int[1];
+        arr[0] = isAddedID;
+        FriendListDTO insertfriendlist = new FriendListDTO(isAddID,arr);
+        friendlistBUS.insertFriendList(insertfriendlist);
+    }
+    
     public void showFriendList() throws SQLException, JsonProcessingException, IOException {
         UserBUS bususer = new UserBUS();
         UserDTO user = new UserDTO();
         FriendListBUS friendlistBUS = new FriendListBUS();
         FriendListDTO friendlist = friendlistBUS.findFriendListByID(this.myName);
-
         int[] arr = friendlist.getUsername();
         if (arr == null) {
             systemCommand("friendlist#");
@@ -221,7 +280,6 @@ public class Worker implements Runnable {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
         String JSONObject = gson.toJson(dsfriend);
-        System.out.println(JSONObject);
         systemCommand("friendlist#" + JSONObject);
     }
 
@@ -246,7 +304,6 @@ public class Worker implements Runnable {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
         String JSONObject = gson.toJson(dsgroup);
-        System.out.println(JSONObject);
         systemCommand("groupchat#" + JSONObject);
     }
 
@@ -288,6 +345,10 @@ public class Worker implements Runnable {
                     login(parts[1], parts[2]);
                 }
                 break;
+                case "addfriend": {
+                    addFriend(parts[1]);
+                }
+                break;
                 case "showMessageFriend": {
                     showMessageFriend(this.myName, Integer.parseInt(parts[1]));
                 }
@@ -307,20 +368,18 @@ public class Worker implements Runnable {
         System.out.println("Client " + socket.toString() + " accepted");
         try {
             String input = "";
-            //setName();
-            //friendList();
             while (true) {
                 input = in.readLine();
                 System.out.println("Server received: " + input + " from " + socket.toString() + " # Client " + myName);
                 Process(input);
-                Scanner sc = new Scanner(System.in);
-                String com = sc.nextLine(); // sumUser
-                if(com.equals("sumUser")) {
-                        System.out.println("Tổng số User đang online: " + Server.sum);
-                        statisticalUser statistical = new statisticalUser();
-                        statistical.statisticalUser();
-                        break;
-                }
+//                Scanner sc = new Scanner(System.in);
+//                String com = sc.nextLine(); // sumUser
+//                if(com.equals("sumUser")) {
+//                        System.out.println("Tổng số User đang online: " + Server.sum);
+//                        statisticalUser statistical = new statisticalUser();
+//                        statistical.statisticalUser();
+//                        break;
+//                }
             }
 //            in.close();
 //            out.close();

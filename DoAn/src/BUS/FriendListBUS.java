@@ -25,5 +25,15 @@ public class FriendListBUS {
         FriendListDAO friendListDAO = new FriendListDAO();
         friendList = friendListDAO.findFriendListByID(userID);
         return friendList;
-    } 
+    }
+    
+    public void updateFriendList(FriendListDTO data) throws SQLException{
+        FriendListDAO friendListDAO = new FriendListDAO();
+        friendListDAO.updateFriendList(data);
+    }
+    
+    public void insertFriendList(FriendListDTO data) throws SQLException{
+        FriendListDAO friendListDAO = new FriendListDAO();
+        friendListDAO.insertFriendList(data);
+    }
 }
