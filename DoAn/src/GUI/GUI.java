@@ -133,7 +133,15 @@ public class GUI extends JFrame {
         r_btn_addgr.setFocusPainted(false);
         r_btn_addgr.setBorder(nullBorder);
         r_btn_addgr.setBackground(outcolor);
-
+        r_btn_addgr.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Client.addMember = new addMemberView();
+                Client.addMember.displayGUI();
+                Client.addMember.setVisible(true);
+            }
+        });
+        
+        
         r_addgr.setVisible(false);
         r_btn_addgr.setVisible(false);
         pn_right.add(r_addgr);
@@ -180,7 +188,14 @@ public class GUI extends JFrame {
         t_btn_creategr.setFocusPainted(false);
         t_btn_creategr.setBorder(nullBorder);
         t_btn_creategr.setBackground(outcolor);
-
+        t_btn_creategr.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Client.inputGroup = new CreateGroupView();
+                Client.inputGroup.displayGUI();
+                Client.inputGroup.setVisible(true);
+            }
+        });
+        
         pn_top.add(t_avatar);
         pn_top.add(t_name);
         pn_top.add(t_addfr);

@@ -61,4 +61,12 @@ public class UserDAO {
         ConnectData.MySQLDisconnect();
         return user;
     }
+    public void Register(UserDTO data) throws SQLException{
+        MySQLConnect ConnectData = new MySQLConnect();
+        String sql = "insert into user (userID,username,password,fullname,sex,birthday) values (NULL,'"+data.getUsername()+"','"+data.getPassword()+"','"+data.getFullname()+"','"+data.getSex()+"','"+data.getBirthday()+"')";
+        ConnectData.st = ConnectData.conn.createStatement();
+        ConnectData.st.executeUpdate(sql);
+        
+        ConnectData.MySQLDisconnect();
+    }
 }

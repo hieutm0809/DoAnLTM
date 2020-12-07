@@ -46,17 +46,36 @@ public class GroupChatDAO {
     
     public GroupChatDTO getMemberListByGroupID(int groupID) throws SQLException, JsonProcessingException{
         MySQLConnect ConnectData = new MySQLConnect();
-        String sql = "select memberlist from groupchat where groupID = '" +groupID+"'";
+        String sql = "select groupname,memberlist from groupchat where groupID = '" +groupID+"'";
         ConnectData.st = ConnectData.conn.createStatement();
         ConnectData.rs = ConnectData.st.executeQuery(sql);
         GroupChatDTO memberlist = new GroupChatDTO();
         while (ConnectData.rs.next()) {
+            memberlist.setGroupname(ConnectData.rs.getString(1));
             ObjectMapper mapper = new ObjectMapper();
-            String arr = ConnectData.rs.getString(1);
+            String arr = ConnectData.rs.getString(2);
             int[] pp1 = mapper.readValue(arr, int[].class);
             memberlist.setMemberlist(pp1);
         }
-        ConnectData.MySQLDisconnect ();
+        ConnectData.MySQLDisconnect();
         return memberlist;
+    }
+    
+    public void insertGroupChat(GroupChatDTO data) throws SQLException{
+        MySQLConnect ConnectData = new MySQLConnect();
+        String sql = "insert into groupchat (groupID,groupname,memberlist) values (NULL,'"+data.getGroupname()+"','"+Arrays.toString(data.getMemberlist())+"')";
+        ConnectData.st = ConnectData.conn.createStatement();
+        ConnectData.st.executeUpdate(sql);
+        
+        ConnectData.MySQLDisconnect();
+    }
+    
+    public void insertMember(GroupChatDTO data) throws SQLException{
+        MySQLConnect ConnectData = new MySQLConnect();
+        String sql = "update groupchat set memberlist = '"+ Arrays.toString(data.getMemberlist()) + "' where groupID = '"+data.getGroupID()+"'";
+        ConnectData.st = ConnectData.conn.createStatement();
+        ConnectData.st.executeUpdate(sql);
+        
+        ConnectData.MySQLDisconnect();
     }
 }

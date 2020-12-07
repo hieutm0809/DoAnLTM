@@ -45,4 +45,9 @@ public class UserBUS {
         user = userDAO.takeInfoUserByID(id);
         return user;
     }
+    
+    public void Register(UserDTO data) throws SQLException{
+        UserDAO userDAO = new UserDAO();
+        userDAO.Register(data);
+    }
 }

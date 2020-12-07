@@ -38,4 +38,14 @@ public class GroupChatBUS {
         memberlist = memberlistDAO.getMemberListByGroupID(groupID);
         return memberlist;
     }
+    
+    public void insertGroupChat(GroupChatDTO data) throws SQLException{
+        GroupChatDAO groupchatDAO = new GroupChatDAO();
+        groupchatDAO.insertGroupChat(data);
+    }
+    
+    public void insertMember(GroupChatDTO data) throws SQLException{
+        GroupChatDAO groupchatDAO = new GroupChatDAO();
+        groupchatDAO.insertMember(data);
+    }
 }

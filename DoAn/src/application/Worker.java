@@ -189,6 +189,12 @@ public class Worker implements Runnable {
         if (user == null) {
             systemCommand("login#Tài khoản không tồn tại");
         } else if (userName.equals(user.getUsername()) && password.equals(user.getPassword())) {
+            for(Worker worker : Server.workers){
+                if(worker.myName == user.getId()){
+                    systemCommand("login#Tài khoản đã đăng nhập");
+                    return;
+                }
+            }
             systemCommand("login#success#" + user.getFullname());
             this.myName = user.getId();
             showFriendList();
@@ -197,6 +203,20 @@ public class Worker implements Runnable {
             systemCommand("login#Mật khẩu không đúng");
         }
 
+    }
+    
+    public void register(String username,String password,String fullname,String sex,String birthday) throws SQLException, IOException{
+        UserBUS userBUS = new UserBUS();
+        userBUS.docDSuser();
+        UserDTO user = new UserDTO();
+        user = userBUS.Tim(username);
+        if(user == null){
+            UserDTO register = new UserDTO(0,username,password,fullname,sex,birthday);
+            userBUS.Register(register);
+            systemCommand("register#success");
+        }else{
+            systemCommand("register#Username đã tồn tại");
+        }
     }
     
     public void addFriend(String username) throws IOException, SQLException{
@@ -217,22 +237,31 @@ public class Worker implements Runnable {
         if(friendlist.getUserID() == 0 ) {
             insertFriendList(this.myName,user.getId());
         }else{                             
-            systemCommand("addfriend#" + user.getFullname());
             updateFriendList(this.myName,user.getId());
         }
+        systemCommand("addfriend#" + user.getFullname());
+        showFriendList();
+        showGroupChat();
         friendlist = friendlistBUS.findFriendListByID(user.getId());
         if(friendlist.getUserID() == 0 ) {
             insertFriendList(user.getId(),this.myName);
         }else{                             
             updateFriendList(user.getId(),this.myName);
         }
-        showFriendList();
+        
+        for(Worker worker : Server.workers){
+            if(worker.myName == user.getId()){
+                worker.systemCommand("addfriend#");
+                worker.showFriendList();
+                worker.showGroupChat();
+            }
+        }
     }
     
     public void updateFriendList(int isAddID , int isAddedID) throws SQLException, JsonProcessingException{
         FriendListBUS friendlistBUS = new FriendListBUS();
         FriendListDTO friendlist = new FriendListDTO();
-        friendlist = friendlistBUS.findFriendListByID(myName);
+        friendlist = friendlistBUS.findFriendListByID(isAddID);
         int[] arr = friendlist.getUsername();
         int [] newarr = new int[arr.length + 1]; 
         for(int i = 0; i< arr.length; i++){
@@ -253,6 +282,59 @@ public class Worker implements Runnable {
         arr[0] = isAddedID;
         FriendListDTO insertfriendlist = new FriendListDTO(isAddID,arr);
         friendlistBUS.insertFriendList(insertfriendlist);
+    }
+     
+    public void addGroup(String groupname) throws SQLException, JsonProcessingException, IOException{
+        GroupChatBUS groupchatBUS = new GroupChatBUS();
+        groupchatBUS.showGroupChat();
+        insertGroupChat(this.myName,groupname);
+        systemCommand("addgroup#" + groupname);
+        showFriendList();
+        showGroupChat();
+    }
+    
+    public void insertGroupChat(int id , String groupname) throws SQLException{
+        GroupChatBUS groupchatBUS = new GroupChatBUS();
+        int[] arr = new int[1];
+        arr[0] = id;
+        GroupChatDTO groupchatDTO = new GroupChatDTO(0,groupname,arr);
+        groupchatBUS.insertGroupChat(groupchatDTO);
+    }
+    
+    public void addMember(int groupid, String username) throws SQLException, JsonProcessingException, IOException{
+        GroupChatBUS groupchatBUS = new GroupChatBUS();
+        groupchatBUS.showGroupChat();
+        insertMember(groupid,username);
+        systemCommand("addmember#" + username);
+    }
+        
+    public void insertMember(int groupid, String username) throws SQLException, JsonProcessingException, IOException{
+        GroupChatBUS groupchatBUS = new GroupChatBUS();
+        GroupChatDTO groupchat = new GroupChatDTO();
+        groupchat = groupchatBUS.getMemberListByGroupID(groupid);
+        UserBUS bususer = new UserBUS();
+        bususer.docDSuser();
+        UserDTO user = new UserDTO();
+        user = bususer.Tim(username);
+        int[] arr = groupchat.getMemberlist();
+        int [] newarr = new int[arr.length + 1]; 
+        for(int i = 0; i< arr.length; i++){
+            if(arr[i] == user.getId()){
+                return;
+            }else{
+                newarr[i] = arr[i];
+            }
+        }
+        newarr[arr.length] = user.getId();
+        GroupChatDTO insertMember = new GroupChatDTO(groupid,groupchat.getGroupname(),newarr);
+        groupchatBUS.insertMember(insertMember);
+        for(Worker worker : Server.workers){
+            if(worker.myName == user.getId()){
+                worker.systemCommand("addmember#");
+                worker.showFriendList();
+                worker.showGroupChat();
+            }
+        }
     }
     
     public void showFriendList() throws SQLException, JsonProcessingException, IOException {
@@ -329,7 +411,7 @@ public class Worker implements Runnable {
         }
         systemCommand("showMessageGroup#" + messagegroup.getContent());
     }
-
+            
     public void Process(String line) throws IOException, SQLException {
         if (!line.contains("#")) {
             this.out.write("Syntax error" + '\n');
@@ -346,8 +428,20 @@ public class Worker implements Runnable {
                     login(parts[1], parts[2]);
                 }
                 break;
+                case "register": {
+                    register(parts[1],parts[2],parts[3],parts[4],parts[5]);
+                }
+                break;
                 case "addfriend": {
                     addFriend(parts[1]);
+                }
+                break;
+                case "addgroup": {
+                    addGroup(parts[1]);
+                }
+                break;
+                case "addmember": {
+                    addMember(Integer.parseInt(parts[1]),parts[2]);
                 }
                 break;
                 case "showMessageFriend": {

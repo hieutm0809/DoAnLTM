@@ -15,8 +15,10 @@ import com.google.gson.Gson;
 import DTO.contentMessage;
 import BUS.UserBUS;
 import DTO.UserDTO;
+import GUI.CreateGroupView;
 import GUI.InputView;
 import static GUI.InputView.inputText;
+import GUI.addMemberView;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,11 +42,35 @@ class SendMessage implements Runnable {
         } catch (IOException e) {
         }
     }
-           
+    
+    public void Register() throws IOException{
+        String username = Client.guiRegister.temail.getText();
+        String password = Client.guiRegister.tmno.getText();
+        String fullname = Client.guiRegister.tname.getText();
+        String sex;
+        if (Client.guiRegister.male.isSelected()) {
+            sex = "nam";
+        } else {
+            sex = "nu";
+        }
+        String birthday=(String) Client.guiRegister.year.getSelectedItem()+ "-" + (String) Client.guiRegister.month.getSelectedItem()+ "-" + (String) Client.guiRegister.date.getSelectedItem();
+        System.out.println("Client sent: register#" +username+ "#" +password+ "#" +fullname+ "#" +sex+ "#" +birthday+'\n');
+        out.write("register#" +username+ "#" +password+ "#" +fullname+ "#" +sex+ "#" +birthday+'\n');
+        out.flush();
+    }
+    
     public void run() {
         switch (Client.status) {
             case "login": {
                 Login();
+            }
+            break;
+            case "register": {
+                try {
+                    Register();
+                } catch (IOException ex) {
+                    Logger.getLogger(SendMessage.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             break;
             case "chat": {
@@ -124,19 +150,56 @@ class ReceiveMessage implements Runnable {
                             }
                         }
                         break;
+                        case "register": {
+                            switch(parts[2]){
+                                case "success":{
+                                    Client.guiRegister.setVisible(false);
+                                    Client.status = "login";
+                                    Client.guiLogin.setVisible(true);
+                                }
+                                break;
+                                default: {
+                                    Client.guiRegister.alert(parts[2]);
+                                }
+                                break;
+                            }
+                        }
+                        break;
                         case "addfriend": {
-                            Client.input.setVisible(false);  
-                            Client.gui.setVisible(false);
-                            Client.gui = new GUI();
+                            if(Client.input != null){
+                                Client.input.setVisible(false);
+                            }
+                            //Client.gui.dispose();
+                            Client.gui.getContentPane().removeAll();
                             Client.gui.displayGUI();
                             Client.gui.setDisableInput();
                             Client.gui.setVisible(true);
-                            
                         }
                         break;
-                        default: {
-                                    Client.input.alert(parts[2]);
-                                }
+                        case "addgroup": {
+                            if(Client.inputGroup != null){
+                                Client.inputGroup.setVisible(false);
+                            }
+                            //Client.gui.dispose();
+                            Client.gui.getContentPane().removeAll();
+                            //Client.gui.repaint();
+                            Client.gui.displayGUI();
+                            Client.gui.setDisableInput();
+                            Client.gui.setVisible(true);
+                        }
+                        break;
+                        case"addmember" :{
+                            if(Client.addMember != null){
+                                Client.addMember.setVisible(false);
+                            }
+                            //Client.gui.dispose();
+                            Client.gui.getContentPane().removeAll();
+                            //Client.gui.repaint();
+                            Client.gui.displayGUI();
+                            Client.gui.setDisableInput();
+                            Client.gui.setVisible(true);
+                        }
+                        break;
                         case "friendlist": {
                             if (parts.length == 3) {
                                 String arr = parts[2];
@@ -179,6 +242,9 @@ class ReceiveMessage implements Runnable {
                             }
                         }
                         break;
+                        default: {
+                            Client.input.alert(parts[2]);
+                        }
                     }
                 }
                 break;
@@ -188,7 +254,9 @@ class ReceiveMessage implements Runnable {
                     bususer.docDSuser();
                     UserDTO user = new UserDTO();
                     user = bususer.takeInfoUserByID(Integer.parseInt(parts[0]));
-                    Client.gui.c_display.append(user.getFullname() + ": " + parts[1] + '\n');
+                    if(Client.chatTo == Integer.parseInt(parts[0])){
+                        Client.gui.c_display.append(user.getFullname() + ": " + parts[1] + '\n');
+                    }     
                 }
             }
         }
@@ -216,6 +284,8 @@ public class Client {
     static LoginView guiLogin;
     public static RegisterView guiRegister;
     public static InputView input;
+    public static CreateGroupView inputGroup;
+    public static addMemberView addMember;
     public static String status;
     static String name;
     public static int chatTo;

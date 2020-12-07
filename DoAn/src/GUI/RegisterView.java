@@ -1,5 +1,6 @@
 package GUI;
 
+import application.Client;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -15,19 +16,19 @@ public class RegisterView extends JFrame implements ActionListener {
     private Container c;
     private JLabel title;
     private JLabel name;
-    private JTextField tname;
+    public static JTextField tname;
     private JLabel mno;
-    private JTextField tmno;
+    public static JPasswordField tmno;
     private JLabel gender;
-    private JRadioButton male;
-    private JRadioButton female;
+    public static JRadioButton male;
+    public static JRadioButton female;
     private ButtonGroup gengp;
     private JLabel dob;
-    private JComboBox date;
-    private JComboBox month;
-    private JComboBox year;
+    public static JComboBox date;
+    public static JComboBox month;
+    public static JComboBox year;
     private JLabel email;
-    private JTextArea temail;
+    public static JTextArea temail;
     private JCheckBox term;
     private JButton sub;
     private JButton reset;
@@ -37,17 +38,17 @@ public class RegisterView extends JFrame implements ActionListener {
     private JTextArea totp;
     private JLabel otp;
     private String dates[]
-            = {"1", "2", "3", "4", "5",
-                "6", "7", "8", "9", "10",
+            = {"01", "02", "03", "04", "05",
+                "06", "07", "08", "09", "10",
                 "11", "12", "13", "14", "15",
                 "16", "17", "18", "19", "20",
                 "21", "22", "23", "24", "25",
                 "26", "27", "28", "29", "30",
                 "31"};
     private String months[]
-            = {"Jan", "Feb", "Mar", "Apr",
-                "May", "Jun", "July", "Aug",
-                "Sup", "Oct", "Nov", "Dec"};
+            = {"01", "02", "03", "04",
+                "05", "06", "07", "08",
+                "09", "10", "11", "12"};
     private String years[]
             = {"1991", "1992", "1993", "1994",
                 "1995", "1996", "1997", "1998",
@@ -100,13 +101,13 @@ public class RegisterView extends JFrame implements ActionListener {
         tname.setLocation(200, 100);
         c.add(tname);
 
-        mno = new JLabel("Mobile");
+        mno = new JLabel("Password");
         mno.setFont(new Font("Open Sans", Font.PLAIN, 20));
         mno.setSize(100, 20);
         mno.setLocation(100, 150);
         c.add(mno);
 
-        tmno = new JTextField();
+        tmno = new JPasswordField();
         tmno.setFont(new Font("Open Sans", Font.PLAIN, 15));
         tmno.setSize(150, 20);
         tmno.setLocation(200, 150);
@@ -220,19 +221,36 @@ public class RegisterView extends JFrame implements ActionListener {
 
         setVisible(true);
     }
-
+    
+    public static void alert(String string) {
+        JOptionPane.showMessageDialog(null, string);
+    }
+    
     // method actionPerformed() 
     // to get the action performed 
     // by the user and act accordingly 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == sub) {
             if (term.isSelected()) {
+                if(tname.getText().equals("")){
+                    res.setText("Full name is empty");
+                    return;
+                }
+                if(tmno.getText().equals("")){
+                    res.setText("Number Phone is empty");
+                    return;
+                }
+                if(temail.getText().equals("")){
+                    res.setText("Email is empty");
+                    return;
+                }
                 String data1;
+                String passtext = new String(tmno.getPassword());
                 String data
                         = "Name : "
                         + tname.getText() + "\n"
-                        + "Mobile : "
-                        + tmno.getText() + "\n";
+                        + "Password : "
+                        + passtext + "\n";
                 if (male.isSelected()) {
                     data1 = "Gender : Male"
                             + "\n";
@@ -250,7 +268,7 @@ public class RegisterView extends JFrame implements ActionListener {
                 String data3 = "Email : " + temail.getText();
                 tout.setText(data + data1 + data2 + data3);
                 tout.setEditable(false);
-                res.setText("Registration Successfully..");
+                Client.executeSendMessage();
             } else {
                 tout.setText("");
                 resadd.setText("");
