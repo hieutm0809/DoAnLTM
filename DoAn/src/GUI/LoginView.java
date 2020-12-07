@@ -66,7 +66,6 @@ public class LoginView extends JFrame {
             } else {
                 Client.executeSendMessage();
             }
-
         });
         panel.add(loginButton);
 

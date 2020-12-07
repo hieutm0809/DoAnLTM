@@ -226,6 +226,7 @@ public class Worker implements Runnable {
         }else{                             
             updateFriendList(user.getId(),this.myName);
         }
+        showFriendList();
     }
     
     public void updateFriendList(int isAddID , int isAddedID) throws SQLException, JsonProcessingException{

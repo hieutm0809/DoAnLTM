@@ -14,7 +14,7 @@ import javax.swing.border.Border;
 
 public class GUI extends JFrame {
 
-    JPanel pn_left, pn_right, pn_center, pn_top;
+    public static JPanel pn_left, pn_right, pn_center, pn_top;
     JButton c_btn_send, c_btn_file, c_btn_sticker, t_btn_addfr, t_btn_creategr, r_btn_addgr;
     public static JTextArea c_input, c_display;
     JLabel c_label, t_avatar, t_name, t_addfr, t_creategr, r_addgr, r_member;
@@ -242,7 +242,7 @@ public class GUI extends JFrame {
         list.setAutoscrolls(rootPaneCheckingEnabled);
         Color outline = new Color(230, 230, 230);
         Border leftBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, outline);
-
+        
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) list.getCellRenderer();
         renderer.setHorizontalAlignment(JLabel.LEFT);
         list.addMouseListener(new MouseAdapter() {

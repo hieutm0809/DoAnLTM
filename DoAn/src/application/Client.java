@@ -126,7 +126,12 @@ class ReceiveMessage implements Runnable {
                         break;
                         case "addfriend": {
                             Client.input.setVisible(false);  
-                            System.out.println(parts[2]);
+                            Client.gui.setVisible(false);
+                            Client.gui = new GUI();
+                            Client.gui.displayGUI();
+                            Client.gui.setDisableInput();
+                            Client.gui.setVisible(true);
+                            
                         }
                         break;
                         default: {
