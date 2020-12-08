@@ -40,7 +40,7 @@ public class LoginView extends JFrame {
         panel.add(userLabel);
 
         userText = new JTextField(20);
-        userText.setText("phong@gmail.com");
+        userText.setText("");
         userText.setBounds(100, 10, 160, 25);
         panel.add(userText);
 
@@ -50,7 +50,7 @@ public class LoginView extends JFrame {
         panel.add(passwordLabel);
 
         passwordText = new JPasswordField(20);
-        passwordText.setText("123456");
+        passwordText.setText("");
         passwordText.setBounds(100, 40, 160, 25);
         panel.add(passwordText);
 

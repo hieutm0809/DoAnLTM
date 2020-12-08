@@ -35,7 +35,7 @@ public class InputView extends JFrame {
         panel.add(inputLabel);
 
         inputText = new JTextField(20);
-        inputText.setText("khanh@gmail.com");
+        inputText.setText("");
         inputText.setBounds(100, 10, 160, 25);
         panel.add(inputText);
 
