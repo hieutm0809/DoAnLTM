@@ -306,6 +306,8 @@ public class Worker implements Runnable {
         groupchatBUS.showGroupChat();
         insertMember(groupid,username);
         systemCommand("addmember#" + username);
+        showFriendList();
+        showGroupChat();
     }
         
     public void insertMember(int groupid, String username) throws SQLException, JsonProcessingException, IOException{
