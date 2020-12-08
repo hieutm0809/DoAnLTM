@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 08, 2020 lúc 09:15 AM
+-- Thời gian đã tạo: Th12 08, 2020 lúc 09:41 AM
 -- Phiên bản máy phục vụ: 10.4.14-MariaDB
 -- Phiên bản PHP: 7.4.11
 
@@ -80,7 +80,8 @@ INSERT INTO `groupchat` (`groupID`, `groupname`, `memberlist`) VALUES
 (1, 'tomato', '[4,5,6]'),
 (2, 'apple', '[4,5]'),
 (3, 'tomato', '[4, 5]'),
-(9, 'banana', '[7, 4]');
+(9, 'banana', '[7, 4]'),
+(15, 'newgroup', '[6, 7]');
 
 -- --------------------------------------------------------
 
@@ -210,7 +211,7 @@ ALTER TABLE `friendlist`
 -- AUTO_INCREMENT cho bảng `groupchat`
 --
 ALTER TABLE `groupchat`
-  MODIFY `groupID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `groupID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT cho bảng `messagegroup`
